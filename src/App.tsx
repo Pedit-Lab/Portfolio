@@ -15,6 +15,7 @@ import { Footer } from './components/Footer';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { useVisualMotion } from './hooks/useVisualMotion';
+import { FloatingChat } from './components/FloatingChat';
 
 function Portfolio() {
   useVisualMotion();
@@ -77,5 +78,10 @@ function Portfolio() {
 }
 
 export default function App() {
-  return <ThemeProvider><Portfolio /></ThemeProvider>;
+  return (
+    <ThemeProvider>
+      <Portfolio />
+      <FloatingChat />
+    </ThemeProvider>
+  );
 }
