@@ -16,12 +16,15 @@ import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { useVisualMotion } from './hooks/useVisualMotion';
 import { FloatingChat } from './components/FloatingChat';
+import { Routes, Route } from 'react-router-dom';
+import PricingPage from './pages/PricingPage';
 
 function Portfolio() {
   useVisualMotion();
   const [activeSection, setActiveSection] = useState('hero');
   const [service, setService] = useState<ServiceDetail | null>(null);
   const [product, setProduct] = useState<InnovationProduct | null>(null);
+
   const goToContact = () => {
     setService(null);
     setProduct(null);
@@ -80,7 +83,10 @@ function Portfolio() {
 export default function App() {
   return (
     <ThemeProvider>
-      <Portfolio />
+      <Routes>
+        <Route path="/" element={<Portfolio />} />
+        <Route path="/pricing" element={<PricingPage />} />
+      </Routes>
       <FloatingChat />
     </ThemeProvider>
   );

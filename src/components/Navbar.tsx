@@ -22,13 +22,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Why Us', href: '#why-us' },
-    { name: 'Product Ideas', href: '#products' },
-    { name: 'Impact & Stats', href: '#impact' },
-    { name: 'Contact Us', href: '#contact' },
+    { name: 'Home', href: '/#hero' },
+    { name: 'About Us', href: '/#about' },
+    { name: 'Services', href: '/#services' },
+    { name: 'Why Us', href: '/#why-us' },
+    { name: 'Product Ideas', href: '/#products' },
+    { name: 'Impact & Stats', href: '/#impact' },
+    { name: 'Contact Us', href: '/#contact' },
   ];
 
   return (
@@ -39,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
     >
       <div className="container-custom flex items-center justify-between" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Brand Logo & Name */}
-        <a href="#hero" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        <a href="/#hero" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <div
             style={{
               position: 'relative',
@@ -94,8 +94,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
               key={link.name}
               href={link.href}
               style={{
-                color: activeSection === link.href.replace('#', '') ? colors.primary : colors.textSecondary,
-                fontWeight: activeSection === link.href.replace('#', '') ? 700 : 500,
+                color: activeSection === link.href.replace('/#', '') ? colors.primary : colors.textSecondary,
+                fontWeight: activeSection === link.href.replace('/#', '') ? 700 : 500,
                 fontSize: '0.92rem',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
               }}
             >
               {link.name}
-              {activeSection === link.href.replace('#', '') && (
+              {activeSection === link.href.replace('/#', '') && (
                 <span
                   style={{
                     position: 'absolute',
@@ -205,7 +205,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
                 textDecoration: 'none',
                 padding: '8px 12px',
                 borderRadius: '8px',
-                background: activeSection === link.href.replace('#', '') ? 'rgba(0, 240, 255, 0.1)' : 'transparent',
+                background: activeSection === link.href.replace('/#', '') ? 'rgba(0, 240, 255, 0.1)' : 'transparent',
               }}
             >
               {link.name}
