@@ -280,8 +280,8 @@ export default function PricingPage() {
         <div className="container-custom">
           <div className="wz-header-row">
             <div className="wz-head">
-              <h2>Project Packages</h2>
-              <p>Pick a service, choose your plan, and place your order in 3 easy steps.</p>
+              <h2>Service packages</h2>
+              <p>Create your package with adding services what you want </p>
             </div>
             {step <= 3 && <Stepper />}
           </div>
