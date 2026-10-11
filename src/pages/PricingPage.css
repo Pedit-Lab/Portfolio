@@ -77,14 +77,26 @@
 .wz-services { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
 .wz-service {
   position: relative; text-align: left; cursor: pointer; padding: 18px 16px; border-radius: 16px; font: inherit;
-  display: flex; flex-direction: column; gap: 8px; background: var(--color-bg-card);
+  display: flex; flex-direction: column; gap: 4px; background: var(--color-bg-card);
   border: 1px solid var(--color-border-color); transition: all 0.25s ease;
 }
 .wz-service:hover { transform: translateY(-3px); border-color: var(--color-primary); }
 .wz-service.selected { border-color: var(--color-primary); box-shadow: var(--color-shadow-card); background: linear-gradient(160deg, color-mix(in srgb, var(--color-primary) 14%, transparent), var(--color-bg-card) 70%); }
-.wz-service-image { width: 100%; height: 90px; object-fit: contain; margin-bottom: 8px; transform: scale(1.45); transform-origin: center; }
-.wz-service h3 { margin: 4px 0 0; font-size: 0.95rem; font-weight: 700; color: var(--color-text-primary); line-height: 1.2; min-height: 2.4em; display: flex; align-items: flex-start; }
-.wz-service-tags { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.wz-service-image { width: 100%; height: 80px; object-fit: contain; margin: 0 auto 2px; transform: scale(1.4); transform-origin: center; display: block; }
+.wz-service h3 {
+  margin: 2px 0 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+.wz-service-tags { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .wz-service-tags li { display: flex; align-items: flex-start; font-size: 0.65rem; color: var(--color-text-secondary); line-height: 1.3; letter-spacing: -0.1px; }
 .wz-service-tags li .tag-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; flex: 1; min-width: 0; }
 .wz-check {
@@ -258,15 +270,207 @@
 :root.dark .wz-bar { background: rgba(12, 12, 16, 0.92); }
 :root.light .wz-bar { background: rgba(255, 255, 255, 0.92); }
 
-@media (max-width: 991px) {
-  .wz-services, .wz-packages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .wz-split-layout, .wz-checkout-layout { grid-template-columns: minmax(0, 1fr); }
+/* Pricing page main spacing to prevent fixed navbar from covering the header */
+#main.pricing-page-main {
+  padding-top: 112px !important;
+  padding-block-start: 112px !important;
 }
-@media (max-width: 768px) {
-  .wz-services, .wz-packages, .wz-addons { grid-template-columns: minmax(0, 1fr); }
+
+/* ─── TABLET (≤ 991px) ─────────────────────────────────────── */
+@media (max-width: 991px) {
+  #main.pricing-page-main {
+    padding-top: 115px !important;
+    padding-block-start: 115px !important;
+  }
+  .wz-services  { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wz-packages  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wz-split-layout, .wz-checkout-layout { grid-template-columns: minmax(0, 1fr); }
+  .wz-split-left { max-height: none; overflow-y: visible; padding: 0; margin: 0; }
+}
+
+/* ─── MOBILE (≤ 640px) ─────────────────────────────────────── */
+@media (max-width: 640px) {
+  #main.pricing-page-main {
+    padding-top: 118px !important;
+    padding-block-start: 118px !important;
+  }
+
+  /* Header - kept as normal (left aligned) */
+  .wz-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .wz-head     { text-align: left; }
+  .wz-head h2  { font-size: 1.6rem; }
+  .wz-head p   { font-size: 0.88rem; }
+
+  /* Stepper */
+  .wz-stepper  { align-self: stretch; justify-content: center; }
+  .wz-step     { padding: 4px; }
+  .wz-step.active { padding: 4px 14px 4px 4px; }
   .wz-step-label { display: none; }
   .wz-step.active .wz-step-label { display: inline; }
-  .wz-bar { padding: 12px 14px; }
-  .wz-bar-actions { width: 100%; }
+
+  /* Step 1 – Service grid: 2-col on phone */
+  .wz-services { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .wz-service {
+    padding: 14px 12px;
+    gap: 2px;
+    text-align: left;
+    align-items: stretch;
+  }
+  .wz-service-image {
+    width: 100%;
+    height: 72px;
+    object-fit: contain;
+    transform: scale(1.4);
+    transform-origin: center;
+    margin-bottom: 0;
+    display: block;
+  }
+  /* Only service name centered */
+  .wz-service h3 {
+    font-size: 0.86rem;
+    font-weight: 700;
+    margin: 2px 0 6px;
+    min-height: unset;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    line-height: 1.25;
+  }
+  /* Tags kept as normal (left aligned) */
+  .wz-service-tags {
+    margin: 4px 0 0;
+    padding: 0;
+    gap: 6px;
+    display: flex;
+    flex-direction: column;
+  }
+  .wz-service-tags li {
+    font-size: 0.65rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    line-height: 1.3;
+  }
+  .wz-service-tags li .wz-dot {
+    margin: 5px 8px 0 0;
+    width: 4px;
+    height: 4px;
+    flex-shrink: 0;
+  }
+  .wz-service-tags li .tag-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+  }
+
+  /* Step 2 – Plan cards */
+  .wz-packages { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .wz-pkg      { padding: 18px 16px; }
+  .wz-pkg-price { font-size: 1.6rem !important; }
+  .wz-features { gap: 7px; margin: 12px 0 16px; }
+  .wz-features li { font-size: 0.8rem; }
+
+  /* Step 2 – Right order summary panel (live total in bar is enough on mobile) */
+  .wz-order-summary-side { display: none; }
+
+  /* Step 2 – IoT notice */
+  .wz-iot-notice { flex-wrap: wrap; }
+
+  /* Addons - organized 2-row layout on mobile */
+  .wz-addons   { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .wz-addon {
+    display: grid;
+    grid-template-areas:
+      "name name"
+      "meta qty";
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 14px 14px;
+    border-radius: 14px;
+  }
+  .wz-addon > div:first-child {
+    display: contents;
+  }
+  .wz-addon-name {
+    grid-area: name;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.3;
+  }
+  .wz-addon-meta {
+    grid-area: meta;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--color-text-secondary);
+  }
+  .wz-qty {
+    grid-area: qty;
+    justify-self: end;
+    gap: 8px;
+    padding: 3px;
+  }
+  .wz-qty button {
+    width: 34px;
+    height: 34px;
+  }
+  .wz-qty span {
+    min-width: 22px;
+    font-size: 0.95rem;
+  }
+
+  /* Panel padding */
+  .wz-panel { padding: 18px 14px; }
+  .wz-title { font-size: 1.15rem; margin-bottom: 4px; }
+  .wz-sub   { font-size: 0.78rem; margin-bottom: 16px; line-height: 1.4; }
+
+  /* Step 3 – Checkout table: hide delivery column so it's Item + Price only */
+  .wz-col-delivery { display: none; }
+
+  /* Bottom bar */
+  .wz-bar { padding: 10px 14px; border-radius: 12px; }
+  .wz-bar-info strong { font-size: 1.05rem; }
+  .wz-bar-actions { width: 100%; margin-left: 0; }
   .wz-bar-actions button { flex: 1; }
+
+  /* Step 4 – Success screen */
+  .wz-success { padding: 24px 20px; }
+}
+
+/* ─── XS PHONES (≤ 400px) ──────────────────────────────────── */
+@media (max-width: 400px) {
+  #main.pricing-page-main {
+    padding-top: 108px !important;
+    padding-block-start: 108px !important;
+  }
+  .wz-head h2 { font-size: 1.35rem; }
+  .wz-step-circle { width: 26px; height: 26px; font-size: 0.75rem; }
+  .wz-step-line { min-width: 10px; }
+  .wz-step.active .wz-step-label { font-size: 0.75rem; }
+  .wz-service { padding: 12px 10px; }
+  .wz-service-image { height: 64px; transform: scale(1.35); margin-bottom: 0; }
+  .wz-service h3 { font-size: 0.8rem; margin: 2px 0 4px; }
+  .wz-service-tags { gap: 4px; }
+  .wz-service-tags li { font-size: 0.62rem; }
+
+  .wz-addon {
+    padding: 12px 12px;
+    gap: 6px 10px;
+  }
+  .wz-addon-name { font-size: 0.86rem; }
+  .wz-addon-meta { font-size: 0.72rem; }
+  .wz-qty button { width: 30px; height: 30px; font-size: 1rem; }
+  .wz-qty span { min-width: 18px; font-size: 0.88rem; }
 }

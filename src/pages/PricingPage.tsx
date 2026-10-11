@@ -259,7 +259,7 @@ export default function PricingPage() {
           <thead>
             <tr>
               <th style={{ textAlign: 'left' }}>Item</th>
-              <th style={{ textAlign: 'center' }}>Delivery</th>
+              <th className="wz-col-delivery" style={{ textAlign: 'center' }}>Delivery</th>
               <th style={{ textAlign: 'right' }}>Price</th>
             </tr>
           </thead>
@@ -267,7 +267,7 @@ export default function PricingPage() {
             {bill.lines.map((l, i) => (
               <tr key={i}>
                 <td>{l.label}</td>
-                <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>{formatDays(l.days)}</td>
+                <td className="wz-col-delivery" style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>{formatDays(l.days)}</td>
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>{formatLKR(l.amount)}</td>
               </tr>
             ))}
@@ -275,7 +275,7 @@ export default function PricingPage() {
           <tfoot>
             <tr>
               <td style={{ textAlign: 'left', fontWeight: 700, color: colors.textPrimary }}>Estimated Total</td>
-              <td style={{ textAlign: 'center', fontWeight: 700, color: colors.primary, whiteSpace: 'nowrap' }}>
+              <td className="wz-col-delivery" style={{ textAlign: 'center', fontWeight: 700, color: colors.primary, whiteSpace: 'nowrap' }}>
                 {formatDays(bill.days)}
               </td>
               <td style={{ textAlign: 'right', fontSize: '1.4rem', fontWeight: 800, color: colors.textPrimary }}>
@@ -293,7 +293,7 @@ export default function PricingPage() {
 
       
 
-      <main id="main" className="premium-section" style={{ flex: 1, paddingBottom: '80px' }}>
+      <main id="main" className="premium-section pricing-page-main" style={{ flex: 1, paddingBottom: '80px' }}>
         <div className="container-custom">
           <div className="wz-header-row">
             <div className="wz-head">
@@ -355,7 +355,7 @@ export default function PricingPage() {
               <div className="wz-split-layout">
                 <div className="wz-split-left" style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                   {service.id === 'iot' && (
-                    <div style={{
+                    <div className="wz-iot-notice" style={{
                       padding: '12px 16px',
                       borderRadius: '12px',
                       background: 'rgba(152, 94, 58, 0.12)',
@@ -387,7 +387,7 @@ export default function PricingPage() {
                       >
                         {p.popular && <span className="wz-badge">Popular</span>}
                         <h3 style={{ fontSize: '1.2rem', fontWeight: 700, margin: '0 0 8px', color: colors.textPrimary }}>{p.name}</h3>
-                        <div style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-1px', color: colors.textPrimary, marginBottom: '12px' }}>
+                        <div className="wz-pkg-price" style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-1px', color: colors.textPrimary, marginBottom: '12px' }}>
                           {formatLKR(p.price)}
                         </div>
                         <span className="wz-chip">⏱ {formatDays(p.days)}</span>
@@ -459,8 +459,8 @@ export default function PricingPage() {
                   </div>
                 </div>
                 </div>
-                {/* Right side: Sticky Order Summary */}
-                <div>
+                {/* Right side: Sticky Order Summary (hidden on mobile via CSS) */}
+                <div className="wz-order-summary-side">
                   <OrderSummary />
                 </div>
               </div>
