@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader2, Bot } from 'lucide-react';
-import { sendChatMessage, type ChatMessage } from '../services/chatService';
+import { X, Send, Loader2, Bot, ArrowUpRight } from 'lucide-react';
+import { sendChatMessage, type ChatMessage, type ChatAction } from '../services/chatService';
 import botSleep from '../assets/bot-sleep.png';
 import botAwake from '../assets/bot-awake.png';
 import bot1 from '../assets/bot1.png';
@@ -9,7 +9,7 @@ import './FloatingChat.css';
 
 const formatMessage = (text: string) => {
   if (!text) return { __html: '' };
-  let html = text
+  const html = text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/^- (.*)$/gm, '• $1')
@@ -25,16 +25,18 @@ export const FloatingChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'model',
-      text: 'Hi ✌️ I am pedit. How can I help you today?'
+      text: 'Hi ✌️ I am pedit. How can I help you today?',
+      actions: [
+        { label: '🚀 Explore Services', type: 'scroll', target: 'services' },
+        { label: '📞 Contact Us', type: 'scroll', target: 'contact' }
+      ]
     }
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // Blinking animation
   const [blinkOpen, setBlinkOpen] = useState(true);
 
   useEffect(() => {
-    // 2 seconds blink
     const interval = setInterval(() => {
       setBlinkOpen(false);
       setTimeout(() => setBlinkOpen(true), 200);
@@ -42,25 +44,69 @@ export const FloatingChat = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Preload avatars to ensure instant blinking in production/CDN
+    [bot1, bot2, botSleep, botAwake].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const headerAvatar = blinkOpen ? bot2 : bot1;
+  const fabAvatar = isHovered ? botAwake : (blinkOpen ? botSleep : bot1);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim() || loading) return;
+  const handleActionClick = (act: ChatAction) => {
+    if (act.type === 'navigate') {
+      if (window.location.pathname === act.target) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.location.href = act.target;
+      }
+    } else if (act.type === 'scroll') {
+      if (window.location.pathname !== '/') {
+        window.location.href = `/#${act.target}`;
+      } else {
+        const el = document.getElementById(act.target);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.location.href = `/#${act.target}`;
+        }
+      }
+    } else if (act.type === 'quote') {
+      if (window.location.pathname !== '/') {
+        window.location.href = '/#contact';
+      } else {
+        const el = document.getElementById('contact');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
-    const userMsg: ChatMessage = { role: 'user', text: message };
+  const handleSendPrompt = async (textToSend: string) => {
+    if (!textToSend.trim() || loading) return;
+
+    const userMsg: ChatMessage = { role: 'user', text: textToSend };
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
     setMessage('');
     setLoading(true);
 
-    const botReply = await sendChatMessage(updatedMessages);
-    setMessages([...updatedMessages, { role: 'model', text: botReply }]);
+    const result = await sendChatMessage(updatedMessages);
+    setMessages([
+      ...updatedMessages,
+      { role: 'model', text: result.reply, actions: result.actions }
+    ]);
     setLoading(false);
+  };
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSendPrompt(message);
   };
 
   return (
@@ -102,12 +148,32 @@ export const FloatingChat = () => {
                     <Bot size={16} />
                   </div>
                 )}
-                <div 
-                  className={`message-bubble ${msg.role}`} 
-                  dangerouslySetInnerHTML={formatMessage(msg.text)} 
-                />
+                <div className="message-content-wrapper">
+                  <div 
+                    className={`message-bubble ${msg.role}`} 
+                    dangerouslySetInnerHTML={formatMessage(msg.text)} 
+                  />
+
+                  {/* Web Assistant Action Buttons */}
+                  {msg.actions && msg.actions.length > 0 && (
+                    <div className="message-actions">
+                      {msg.actions.map((act, aIdx) => (
+                        <button
+                          key={aIdx}
+                          type="button"
+                          className="chat-action-btn"
+                          onClick={() => handleActionClick(act)}
+                        >
+                          <span>{act.label}</span>
+                          <ArrowUpRight size={13} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
+
             {loading && (
               <div className="message-row model">
                 <div className="msg-avatar">
@@ -122,15 +188,14 @@ export const FloatingChat = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
+          {/* Input Area */}
           <div className="floating-chat-input-area">
-            <p className="chat-hint">Ask about services, pricing, or projects…</p>
             <form onSubmit={handleSend} className="chat-form">
               <input
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message…"
+                placeholder="Ask about services, projects, or contact us…"
                 className="chat-input"
                 autoComplete="off"
               />
@@ -163,7 +228,7 @@ export const FloatingChat = () => {
         ) : (
           <div className="robot-container">
             <img
-              src={isHovered ? botAwake : botSleep}
+              src={fabAvatar}
               alt="pedit Chat Bot"
               className="robot-img"
             />

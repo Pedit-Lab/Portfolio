@@ -1,0 +1,382 @@
+{
+  "quickChips": [
+    {
+      "id": "services",
+      "label": "🚀 What are your services?",
+      "query": "what are your services"
+    },
+    {
+      "id": "contact",
+      "label": "📞 How to contact you?",
+      "query": "what is your phone number"
+    },
+    {
+      "id": "projects",
+      "label": "🛠️ Past Projects & Work",
+      "query": "how many projects you done"
+    },
+    {
+      "id": "quote",
+      "label": "📝 Request a Quote",
+      "query": "how can I get a quote"
+    },
+    {
+      "id": "about",
+      "label": "🤖 Who are you?",
+      "query": "who are you"
+    }
+  ],
+  "faqList": [
+    {
+      "id": "greetings",
+      "keywords": [
+        "hi",
+        "hello",
+        "hey",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "ayubowan",
+        "sup",
+        "yo",
+        "hlo",
+        "halo"
+      ],
+      "reply": "Hi there! I'm pedit, your friendly guide here at the pedit-lab portfolio website.\n\nHow can I help you learn more about our services, projects, or technical expertise today? Feel free to ask about our work in Software, Design, Cloud, IoT, or AI!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "identity",
+      "keywords": [
+        "who are you",
+        "what are you",
+        "who is pedit",
+        "what is your name",
+        "about pedit",
+        "who made you"
+      ],
+      "reply": "I'm pedit, a friendly AI assistant for the pedit-lab portfolio website!\n\nMy job is to help you explore our services, technical expertise, and projects—spanning custom software, UI/UX design, cloud infrastructure, IoT solutions, and AI integration.\n\nIf you're thinking about starting a project, feel free to ask me questions or check out our Contact section to get in touch!",
+      "actions": [
+        {
+          "label": "View Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Team",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "keywords": [
+        "what are your services",
+        "what services",
+        "services",
+        "what do you do",
+        "what do you offer",
+        "capabilities",
+        "skills",
+        "what can you build",
+        "tell me about your services",
+        "tell me about services",
+        "about your services",
+        "about services",
+        "servises"
+      ],
+      "reply": "At pedit-lab, we offer a wide range of technical and creative services tailored to your business needs:\n\n* **Software**: Custom web applications, SaaS platforms, customer portals, internal business tools, and API integrations using modern tools like React, TypeScript, Next.js, and Node.js.\n* **Design**: UI/UX design, user journeys, interactive prototypes, design systems, and brand identity using Figma.\n* **Cloud**: Reliable cloud architecture, application hosting, managed databases, secure APIs, and CI/CD pipelines leveraging AWS, GCP, Docker, and MongoDB.\n* **IoT**: Connecting the physical world through embedded firmware (ESP32, STM32, C/C++), sensor integrations, and device-to-cloud connectivity using MQTT.\n* **AI**: Practical artificial intelligence, including AI assistants, knowledge search, document processing, and predictive analytics built with Python, PyTorch, and RAG.\n\nIf you have a project in mind or want to know more about how we can help your business, feel free to ask or head over to our Contact section to request a quote!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "keywords": [
+        "phone",
+        "phone number",
+        "what is your phone number",
+        "contact",
+        "how to contact",
+        "contant",
+        "how to contant",
+        "email",
+        "call",
+        "reach you",
+        "address",
+        "location",
+        "hire",
+        "talk",
+        "touch",
+        "message"
+      ],
+      "reply": "I don't have access to a specific phone number here, but we'd love to hear from you!\n\nTo get in touch with us about a project, a quote, or any questions, please visit the Contact section on our website. We're ready to help bring your ideas to life!",
+      "actions": [
+        {
+          "label": "Go to Contact Form",
+          "type": "scroll",
+          "target": "contact"
+        },
+        {
+          "label": "Request a Quote",
+          "type": "quote",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "keywords": [
+        "how many projects you done",
+        "projects done",
+        "how many projects",
+        "projects",
+        "portfolio",
+        "case studies",
+        "past work",
+        "work",
+        "track record"
+      ],
+      "reply": "While I don't track a specific number of total projects in my database, our team at pedit-lab has extensive experience turning complex requirements into dependable solutions across multiple domains!\n\nWe specialize in:\n* **Software**: Custom web apps, SaaS platforms, and internal business tools.\n* **Cloud**: Scalable infrastructure, hosting, and secure APIs.\n* **IoT**: Connecting physical devices and sensors to the cloud.\n* **AI**: Smart assistants, document processing, and workflow automation.\n* **Design**: User journeys, UI/UX, and brand identity.\n\nIf you have a project in mind and want to see how we can help bring it to life, head over to our Contact section to request a quote!",
+      "actions": [
+        {
+          "label": "View Innovations & Work",
+          "type": "scroll",
+          "target": "products"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "pricing",
+      "keywords": [
+        "pricing",
+        "price",
+        "cost",
+        "how much",
+        "package",
+        "packages",
+        "quote",
+        "estimate",
+        "rate",
+        "rates",
+        "budget",
+        "charge",
+        "how can i get a quote"
+      ],
+      "reply": "At pedit-lab, our pricing is customized to the specific scale, features, and requirements of each project—whether you need custom software, UI/UX design, cloud architecture, IoT engineering, or AI integration.\n\nPlease reach out to us via our Contact form below with your project details, and our team will provide a tailored quote and consultation!",
+      "actions": [
+        {
+          "label": "Contact for a Quote",
+          "type": "scroll",
+          "target": "contact"
+        },
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        }
+      ]
+    },
+    {
+      "id": "software",
+      "keywords": [
+        "software",
+        "web development",
+        "web app",
+        "react",
+        "typescript",
+        "nextjs",
+        "next.js",
+        "frontend",
+        "backend",
+        "fullstack",
+        "full stack",
+        "saas",
+        "node"
+      ],
+      "reply": "Our software engineering focuses on building high-performance, maintainable web applications and SaaS platforms. We leverage modern web technologies including React 19, TypeScript, Next.js, Node.js, and scalable cloud databases.\n\nHave a software project in mind? Reach out to our team to discuss your requirements!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Team",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "design",
+      "keywords": [
+        "design",
+        "ui",
+        "ux",
+        "ui/ux",
+        "figma",
+        "prototype",
+        "wireframe",
+        "branding",
+        "user interface",
+        "user experience"
+      ],
+      "reply": "Our design service transforms concepts into intuitive digital experiences. We design design systems, interactive prototypes, user journeys, and brand visuals primarily in Figma with full support for light and dark modes.\n\nNeed UI/UX design for your product? Contact us today to collaborate!",
+      "actions": [
+        {
+          "label": "View Innovations",
+          "type": "scroll",
+          "target": "products"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "keywords": [
+        "cloud",
+        "aws",
+        "gcp",
+        "docker",
+        "devops",
+        "infrastructure",
+        "hosting",
+        "mongodb",
+        "ci/cd",
+        "deployment"
+      ],
+      "reply": "We deliver secure, scalable cloud architectures hosted on AWS and Google Cloud, containerized with Docker, and automated with CI/CD deployment pipelines. We ensure high availability and managed database performance.\n\nNeed cloud architecture or hosting assistance? Feel free to contact us!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "iot",
+      "keywords": [
+        "iot",
+        "hardware",
+        "esp32",
+        "stm32",
+        "firmware",
+        "sensors",
+        "mqtt",
+        "embedded",
+        "microcontroller"
+      ],
+      "reply": "Our IoT solutions connect the physical world to the cloud. We develop embedded firmware for ESP32 and STM32 microcontrollers in C/C++, connect industrial sensors, and build device-to-cloud telemetry pipelines over MQTT and WebSockets.\n\nHave an IoT prototype or hardware idea? Let's discuss it via our contact form!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "keywords": [
+        "ai",
+        "artificial intelligence",
+        "machine learning",
+        "rag",
+        "chatbots",
+        "nlp",
+        "python",
+        "pytorch",
+        "document processing"
+      ],
+      "reply": "We engineer practical AI capabilities, including custom conversational agents, Retrieval-Augmented Generation (RAG) knowledge search, automated document processing, and predictive analytics using Python and PyTorch.\n\nLooking to integrate AI into your workflow? Contact us to explore solutions!",
+      "actions": [
+        {
+          "label": "Explore Services",
+          "type": "scroll",
+          "target": "services"
+        },
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    },
+    {
+      "id": "location",
+      "keywords": [
+        "location",
+        "where are you",
+        "address",
+        "colombo",
+        "sri lanka",
+        "based"
+      ],
+      "reply": "pedit-lab is based in Colombo, Sri Lanka, providing cutting-edge digital engineering and design services to partners locally and internationally.",
+      "actions": [
+        {
+          "label": "Contact Us",
+          "type": "scroll",
+          "target": "contact"
+        }
+      ]
+    }
+  ],
+  "fallback": {
+    "reply": "I'm here to help you explore pedit-lab! Whether you're curious about our custom software development, cloud infrastructure, UI/UX design, IoT solutions, or AI integrations, I'm here to answer your questions. Feel free to explore our services or get in touch for a quote!",
+    "actions": [
+      {
+        "label": "Explore Services",
+        "type": "scroll",
+        "target": "services"
+      },
+      {
+        "label": "Contact Us",
+        "type": "scroll",
+        "target": "contact"
+      }
+    ]
+  }
+}

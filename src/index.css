@@ -335,3 +335,12 @@ svg{flex-shrink:0}
 .premium-section:not(#hero)>.animated-background,.premium-footer>.animated-background{opacity:.8}
 .premium-section:nth-of-type(even)>.animated-background canvas{transform:scaleX(-1)}
 .premium-footer>.animated-background{mask-image:linear-gradient(to bottom,transparent,black 45%)}
+
+/* Hide Netlify badge */
+.netlify-badge,
+[class*="netlify"],
+a[href*="netlify.com"][target="_blank"]:has(img) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
