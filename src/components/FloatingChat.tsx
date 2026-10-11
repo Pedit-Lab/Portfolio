@@ -44,7 +44,16 @@ export const FloatingChat = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Preload avatars to ensure instant blinking in production/CDN
+    [bot1, bot2, botSleep, botAwake].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const headerAvatar = blinkOpen ? bot2 : bot1;
+  const fabAvatar = isHovered ? botAwake : (blinkOpen ? botSleep : bot1);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -219,7 +228,7 @@ export const FloatingChat = () => {
         ) : (
           <div className="robot-container">
             <img
-              src={isHovered ? botAwake : botSleep}
+              src={fabAvatar}
               alt="pedit Chat Bot"
               className="robot-img"
             />

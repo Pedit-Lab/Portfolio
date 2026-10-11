@@ -1,4 +1,3 @@
-// src/services/chatService.ts
 import chatFaqData from '../data/chatFaq.json';
 import { capabilities } from '../data/portfolio';
 
@@ -41,12 +40,11 @@ export interface PredefinedQA {
   actions?: ChatAction[];
 }
 
-// Load frequent messages and quick chips from external JSON file
 export const QUICK_CHIPS: QuickChip[] = chatFaqData.quickChips as QuickChip[];
 export const COMMON_QA: PredefinedQA[] = chatFaqData.faqList as PredefinedQA[];
 export const FALLBACK_MESSAGE = chatFaqData.fallback as { reply: string; actions?: ChatAction[] };
 
-// Calculate Levenshtein edit distance between two strings
+// Levenshtein edit distance
 function levenshteinDistance(a: string, b: string): number {
   if (a === b) return 0;
   if (!a.length) return b.length;
@@ -71,7 +69,7 @@ function levenshteinDistance(a: string, b: string): number {
   return prev[b.length];
 }
 
-// Cache pre-compiled keyword regexes to avoid repeated RegExp instantiation
+// Pre-compiled keyword regex cache
 const keywordRegexCache = new Map<string, RegExp>();
 
 function getKeywordRegex(kw: string): RegExp {
@@ -84,32 +82,30 @@ function getKeywordRegex(kw: string): RegExp {
   return pattern;
 }
 
-// Pre-compile all keyword regexes at module initialization
 for (const item of COMMON_QA) {
   for (const kw of item.keywords) {
     getKeywordRegex(kw);
   }
 }
 
-// Returns true only when keyword matches at a real word boundary in the text
+// Word-boundary match
 function kwMatches(text: string, kw: string): boolean {
   if (text === kw) return true;
   const pattern = getKeywordRegex(kw);
   return pattern.test(text);
 }
 
-// Handles common typos and spelling variations using edit distance (<= 2)
+// Fuzzy match (edit distance <= 2)
 function fuzzyKwMatches(text: string, kw: string): boolean {
-  // 1. Check exact match first
   if (kwMatches(text, kw)) return true;
 
   const textWords = text.split(' ');
   const kwWords = kw.split(' ');
 
-  // 2. Single-word keyword matching against individual words in user text
+  // Single-word match
   if (kwWords.length === 1) {
     const target = kwWords[0];
-    if (target.length <= 3) return false; // Prevent overly broad matches on short words (e.g. "hi", "to")
+    if (target.length <= 3) return false;
     const maxDist = target.length <= 5 ? 1 : 2;
 
     for (const w of textWords) {
@@ -122,7 +118,7 @@ function fuzzyKwMatches(text: string, kw: string): boolean {
     return false;
   }
 
-  // 3. Multi-word phrase matching with sliding window
+  // Multi-word sliding window match
   const windowLen = kwWords.length;
   if (textWords.length < windowLen) {
     if (Math.abs(text.length - kw.length) <= 2 && levenshteinDistance(text, kw) <= 2) {
@@ -155,8 +151,7 @@ function findAnswer(userText: string): { reply: string; actions?: ChatAction[] }
     };
   }
 
-  // Score every FAQ item: sum keyword lengths for matches.
-  // The item with the highest score wins.
+  // Score FAQ items by matched keyword length
   let bestMatch: PredefinedQA | null = null;
   let bestScore = 0;
 
@@ -166,7 +161,6 @@ function findAnswer(userText: string): { reply: string; actions?: ChatAction[] }
       if (kwMatches(normalized, kw)) {
         score += kw.length;
       } else if (fuzzyKwMatches(normalized, kw)) {
-        // Slightly lower score for fuzzy matches so exact matches take priority
         score += Math.max(1, kw.length - 1);
       }
     }
@@ -176,7 +170,6 @@ function findAnswer(userText: string): { reply: string; actions?: ChatAction[] }
     }
   }
 
-  // Require at least one real keyword to have matched
   if (bestMatch && bestScore > 0) {
     return { reply: bestMatch.reply, actions: bestMatch.actions };
   }
@@ -190,7 +183,7 @@ async function callGeminiFallback(messages: ChatMessage[]): Promise<{ reply: str
   }
 
   try {
-    // Filter and format conversation history for Gemini API
+    // Format conversation history for Gemini
     const formattedHistory = messages
       .filter(msg => msg.role === 'user' || messages.indexOf(msg) > 0)
       .map(msg => ({
@@ -247,11 +240,10 @@ export async function sendChatMessage(messages: ChatMessage[]): Promise<{ reply:
       return { reply: "Please type a message to get started!" };
     }
 
-    // Check predefined FAQ answers first with error protection
+    // Check predefined FAQ
     try {
       const predefinedAnswer = findAnswer(lastUserMsg.text);
       if (predefinedAnswer) {
-        // Simulate a realistic fast conversational typing feel (250ms)
         await new Promise(resolve => setTimeout(resolve, 250));
         return predefinedAnswer;
       }
@@ -259,7 +251,7 @@ export async function sendChatMessage(messages: ChatMessage[]): Promise<{ reply:
       console.error('Error matching FAQ answer in findAnswer():', err);
     }
 
-    // Fallback to Gemini Generative AI for queries not matching predefined FAQs
+    // Fallback to Gemini
     return await callGeminiFallback(messages);
   } catch (error) {
     console.error('Chat error:', error);
