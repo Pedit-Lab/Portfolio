@@ -180,11 +180,63 @@
 .wz-split-left { max-height: calc(100vh - 280px); overflow-y: auto; padding: 24px 12px 24px 8px; margin: -24px 0 -24px -8px; }
 .wz-split-left::-webkit-scrollbar { width: 6px; }
 .wz-split-left::-webkit-scrollbar-thumb { background: var(--color-border-color); border-radius: 4px; }
-.wz-field { display: flex; flex-direction: column; gap: 6px; }
-.wz-label { font-size: 0.78rem; font-weight: 600; color: var(--color-text-secondary); }
-.wz-error { font-size: 0.74rem; color: #ef4444; }
-.input-field.area { resize: vertical; min-height: 90px; font-family: inherit; }
-.input-field.invalid { border-color: #ef4444 !important; }
+/* Form fields & checkout layout */
+.wz-field { display: flex; flex-direction: column; gap: 7px; }
+.wz-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: -0.15px;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+}
+.wz-label .wz-req {
+  color: var(--color-primary);
+  margin-left: 3px;
+  font-weight: 700;
+}
+.wz-error { font-size: 0.74rem; font-weight: 500; color: #ef4444; margin-top: 2px; }
+
+/* Polished, consistent form inputs matching site theme */
+.wz-field .input-field {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 0.86rem;
+  font-family: inherit;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.wz-field .input-field::placeholder {
+  font-size: 0.84rem;
+  color: var(--color-text-muted);
+  opacity: 0.85;
+}
+.wz-field .input-field:hover:not(:focus) {
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border-color));
+}
+.wz-field .input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-bg-card));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+.wz-field .input-field.area {
+  resize: vertical;
+  min-height: 96px;
+  padding: 12px 14px;
+  line-height: 1.55;
+  font-family: inherit;
+}
+.wz-field .input-field.invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
 
 .wz-sum-service { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; margin: 16px 0; background: color-mix(in srgb, var(--color-primary) 14%, transparent); }
 .wz-sum-icon { font-size: 1.5rem; }
@@ -192,7 +244,7 @@
 .wz-sum-row { display: flex; justify-content: space-between; gap: 12px; font-size: 0.85rem; color: var(--color-text-secondary); }
 .wz-sum-total { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border-color); }
 
-.wz-checkout-layout { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 28px; align-items: start; }
+.wz-checkout-layout { display: grid; grid-template-columns: minmax(360px, 420px) minmax(0, 1fr); gap: 28px; align-items: start; }
 .wz-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.88rem; color: var(--color-text-secondary); }
 .wz-table th { padding: 12px 10px; border-bottom: 2px solid var(--color-border-color); font-weight: 700; color: var(--color-text-primary); }
 .wz-table td { padding: 14px 10px; border-bottom: 1px solid var(--color-border-color); }
@@ -269,6 +321,21 @@
 
 :root.dark .wz-bar { background: rgba(12, 12, 16, 0.92); }
 :root.light .wz-bar { background: rgba(255, 255, 255, 0.92); }
+
+:root.dark .wz-field .input-field {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+:root.dark .wz-field .input-field:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+:root.light .wz-field .input-field {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+:root.light .wz-field .input-field:hover:not(:focus) {
+  border-color: #cbd5e1;
+}
 
 /* Pricing page main spacing to prevent fixed navbar from covering the header */
 #main.pricing-page-main {

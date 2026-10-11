@@ -492,13 +492,15 @@ export default function PricingPage() {
                   <h3 className="wz-title">Your Details</h3>
                   <p className="wz-sub">We will confirm your order through WhatsApp.</p>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div className="wz-field">
-                      <label className="wz-label" htmlFor="co-name">Name or University *</label>
+                      <label className="wz-label" htmlFor="co-name">
+                        Name and University <span className="wz-req">*</span>
+                      </label>
                       <input
                         id="co-name"
                         type="text"
-                        placeholder="e.g. Kamal Perera / University of Moratuwa"
+                        placeholder="e.g. Kamal Perera - University of Moratuwa"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className={`input-field ${errors.name ? 'invalid' : ''}`}
@@ -507,7 +509,9 @@ export default function PricingPage() {
                     </div>
 
                     <div className="wz-field">
-                      <label className="wz-label" htmlFor="co-email">Email Address *</label>
+                      <label className="wz-label" htmlFor="co-email">
+                        Email Address <span className="wz-req">*</span>
+                      </label>
                       <input
                         id="co-email"
                         type="email"
@@ -520,7 +524,9 @@ export default function PricingPage() {
                     </div>
 
                     <div className="wz-field">
-                      <label className="wz-label" htmlFor="co-phone">WhatsApp Number *</label>
+                      <label className="wz-label" htmlFor="co-phone">
+                        WhatsApp Number <span className="wz-req">*</span>
+                      </label>
                       <input
                         id="co-phone"
                         type="tel"
@@ -533,7 +539,9 @@ export default function PricingPage() {
                     </div>
 
                     <div className="wz-field">
-                      <label className="wz-label" htmlFor="co-notes">Project topic / requirements (optional)</label>
+                      <label className="wz-label" htmlFor="co-notes">
+                        Project topic / requirements <span style={{ opacity: 0.65, fontWeight: 400, marginLeft: 4 }}>(optional)</span>
+                      </label>
                       <textarea
                         id="co-notes"
                         placeholder="Briefly describe your project, deadline, university guidelines..."
