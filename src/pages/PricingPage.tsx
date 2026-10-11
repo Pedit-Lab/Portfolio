@@ -3,7 +3,7 @@ import emailjs from '@emailjs/browser';
 import { useTheme } from '../context/ThemeContext';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { SERVICES, calcBill, formatLKR, formatDays, formatAddonDays, CATEGORIES } from '../data/pricing';
+import { SERVICES, calcBill, formatLKR, formatDays, formatAddonDays, getIncludedQty, CATEGORIES } from '../data/pricing';
 import type { Plan } from '../data/pricing';
 import './PricingPage.css';
 
@@ -71,17 +71,31 @@ export default function PricingPage() {
 
   const handleSelectPlan = (p: Plan) => {
     setPlanId(p.id);
-    setQtyMap((prev) =>
-      prev.express && prev.express > p.days - 1 ? { ...prev, express: Math.max(p.days - 1, 0) } : prev
-    );
+    setQtyMap((prev) => {
+      const next: Record<string, number> = {};
+      service?.addons.forEach((addon) => {
+        const oldIncluded = getIncludedQty(plan, addon.id);
+        const newIncluded = getIncludedQty(p, addon.id);
+        const current = prev[addon.id] !== undefined ? prev[addon.id] : oldIncluded;
+        const extra = Math.max(0, current - oldIncluded);
+        next[addon.id] = newIncluded + extra;
+      });
+      if (next.express && next.express > p.days - 1) {
+        next.express = Math.max(p.days - 1, 0);
+      }
+      return next;
+    });
   };
 
   const changeQty = (addonId: string, delta: number) => {
-    if (!plan) return;
-    const max = addonId === 'express' ? Math.max(plan.days - 1, 0) : MAX_ADDON_QTY;
+    if (!plan || !service) return;
+    const min = getIncludedQty(plan, addonId);
+    const current = qtyMap[addonId] !== undefined ? qtyMap[addonId] : min;
+    const max = addonId === 'express' ? Math.max(plan.days - 1, 0) : min + MAX_ADDON_QTY;
+    const nextVal = Math.min(max, Math.max(min, current + delta));
     setQtyMap((prev) => ({
       ...prev,
-      [addonId]: Math.min(max, Math.max(0, (prev[addonId] || 0) + delta)),
+      [addonId]: nextVal,
     }));
   };
 
@@ -260,7 +274,10 @@ export default function PricingPage() {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={2} style={{ textAlign: 'left', fontWeight: 700, color: colors.textPrimary }}>Estimated Total</td>
+              <td style={{ textAlign: 'left', fontWeight: 700, color: colors.textPrimary }}>Estimated Total</td>
+              <td style={{ textAlign: 'center', fontWeight: 700, color: colors.primary, whiteSpace: 'nowrap' }}>
+                {formatDays(bill.days)}
+              </td>
               <td style={{ textAlign: 'right', fontSize: '1.4rem', fontWeight: 800, color: colors.textPrimary }}>
                 {formatLKR(bill.total)}
               </td>
@@ -337,6 +354,25 @@ export default function PricingPage() {
             <div key="step2" className="wz-view">
               <div className="wz-split-layout">
                 <div className="wz-split-left" style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                  {service.id === 'iot' && (
+                    <div style={{
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      background: 'rgba(152, 94, 58, 0.12)',
+                      border: '1px solid rgba(211, 102, 34, 0.35)',
+                      fontSize: '0.85rem',
+                      lineHeight: 1.5,
+                      color: colors.textPrimary,
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '10px'
+                    }}>
+                      <span style={{ fontSize: '1.1rem' }}>🚨</span>
+                      <div>
+                        <strong>Hardware Note:</strong> Pricing does not include hardware costs (ESP32, sensors, motors, etc.). Required hardware must be supplied by the client or billed separately.
+                      </div>
+                    </div>
+                  )}
                   <div className="wz-packages">
                   {service.plans.map((p) => {
                     const isSelected = plan.id === p.id;
@@ -383,10 +419,15 @@ export default function PricingPage() {
 
                   <div className="wz-addons">
                     {service.addons.map((addon) => {
-                      const qty = qtyMap[addon.id] || 0;
-                      const max = addon.id === 'express' ? Math.max(plan.days - 1, 0) : MAX_ADDON_QTY;
+                      const included = getIncludedQty(plan, addon.id);
+                      const qty = qtyMap[addon.id] !== undefined ? qtyMap[addon.id] : included;
+                      const min = included;
+                      const max = addon.id === 'express' ? Math.max(plan.days - 1, 0) : min + MAX_ADDON_QTY;
+                      const extra = Math.max(0, qty - included);
+                      const isExtra = extra > 0;
+
                       return (
-                        <div key={addon.id} className={`wz-addon ${qty > 0 ? 'active' : ''}`}>
+                        <div key={addon.id} className={`wz-addon ${isExtra ? 'active' : ''}`}>
                           <div style={{ minWidth: 0 }}>
                             <div className="wz-addon-name">{addon.name}</div>
                             <div className="wz-addon-meta">
@@ -394,9 +435,23 @@ export default function PricingPage() {
                             </div>
                           </div>
                           <div className="wz-qty">
-                            <button aria-label={`Decrease ${addon.name}`} disabled={qty === 0} onClick={() => changeQty(addon.id, -1)}>−</button>
-                            <span>{qty}</span>
-                            <button aria-label={`Increase ${addon.name}`} disabled={qty >= max} onClick={() => changeQty(addon.id, 1)}>+</button>
+                            <button
+                              type="button"
+                              aria-label={`Decrease ${addon.name}`}
+                              disabled={qty <= min}
+                              onClick={() => changeQty(addon.id, -1)}
+                            >
+                              −
+                            </button>
+                            <span style={{ fontWeight: 700 }}>{qty}</span>
+                            <button
+                              type="button"
+                              aria-label={`Increase ${addon.name}`}
+                              disabled={qty >= max}
+                              onClick={() => changeQty(addon.id, 1)}
+                            >
+                              +
+                            </button>
                           </div>
                         </div>
                       );
@@ -524,7 +579,7 @@ export default function PricingPage() {
                   <small style={{ color: colors.textSecondary }}>Order reference</small>
                   <strong style={{ fontSize: '1.2rem', letterSpacing: 1, color: colors.textPrimary }}>{orderRef}</strong>
                   <small style={{ color: colors.textSecondary }}>
-                    {service.name} · {plan.name} · {formatLKR(bill.total)}
+                    {service.name} · {plan.name} · {formatDays(bill.days)} · {formatLKR(bill.total)}
                   </small>
                 </div>
 
