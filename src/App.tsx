@@ -22,6 +22,56 @@ import type { ParticleTransitionHandle } from './components/ParticleTransition';
 import { FloatingChat } from './components/FloatingChat';
 import { Routes, Route } from 'react-router-dom';
 import PricingPage from './pages/PricingPage';
+import introVideo from '../202610121909.mp4';
+
+function VideoIntro({ onComplete }: { onComplete: () => void }) {
+  const [isLeaving, setIsLeaving] = useState(false);
+  const hasFinished = useRef(false);
+
+  const finishIntro = () => {
+    if (hasFinished.current) return;
+    hasFinished.current = true;
+    setIsLeaving(true);
+    window.setTimeout(onComplete, 650);
+  };
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <div className={`site-video-intro${isLeaving ? ' site-video-intro--leaving' : ''}`}>
+      <div className="site-video-intro__stage">
+        <video
+          className="site-video-intro__video"
+          src={introVideo}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={finishIntro}
+          onError={finishIntro}
+          aria-label="PEDIT Lab introduction"
+        />
+      </div>
+      <button className="site-video-intro__skip" type="button" onClick={finishIntro}>
+        Skip intro
+      </button>
+    </div>
+  );
+}
+
+function PortfolioEntry() {
+  const [introComplete, setIntroComplete] = useState(false);
+
+  return introComplete
+    ? <Portfolio />
+    : <VideoIntro onComplete={() => setIntroComplete(true)} />;
+}
 
 function Portfolio() {
   useVisualMotion();
@@ -93,7 +143,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <Routes>
-        <Route path="/" element={<Portfolio />} />
+        <Route path="/" element={<PortfolioEntry />} />
         <Route path="/pricing" element={<PricingPage />} />
       </Routes>
       <FloatingChat />

@@ -45,12 +45,6 @@ export function useSectionTransition({
       return;
     }
 
-    // Check reduced motion preference
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      previousSectionRef.current = toId;
-      return;
-    }
-
     const now = Date.now();
     // Cooldown prevents overlapping glitching during rapid wheel spins
     if (now - lastTransitionTimeRef.current < 450) {
@@ -65,8 +59,11 @@ export function useSectionTransition({
     lastTransitionTimeRef.current = now;
     isTransitioningRef.current = true;
 
-    // Trigger 3D Particle Wave
-    particleRef.current?.triggerTransition(direction);
+    // The full-screen particle wave is a desktop effect. Keep mobile section
+    // changes lightweight while retaining the content reveal transition.
+    if (window.innerWidth >= 768) {
+      particleRef.current?.triggerTransition(direction);
+    }
 
     // Cancel any previous GSAP timeline cleanly and reset props
     if (currentTimelineRef.current) {

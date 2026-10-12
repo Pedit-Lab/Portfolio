@@ -169,8 +169,10 @@ export const ParticleTransition = forwardRef<ParticleTransitionHandle>((_, ref) 
     const totalDuration = durationRef.current;
     const progress = Math.min(1, elapsed / totalDuration);
 
-    const width = canvas.width;
-    const height = canvas.height;
+    // Draw in CSS pixels. The canvas backing store is DPR-scaled separately;
+    // using canvas.width/height here pushes the effect off-screen on phones.
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     const cx = width / 2;
     const cy = height / 2;
     const focalLength = 550; // 3D Camera focal length
@@ -310,11 +312,6 @@ export const ParticleTransition = forwardRef<ParticleTransitionHandle>((_, ref) 
   // Expose trigger method to coordinator hook
   useImperativeHandle(ref, () => ({
     triggerTransition: (direction: 'up' | 'down') => {
-      // Reduced motion check
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        return;
-      }
-
       const canvas = canvasRef.current;
       if (!canvas) return;
 
@@ -330,7 +327,7 @@ export const ParticleTransition = forwardRef<ParticleTransitionHandle>((_, ref) 
 
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.scale(dpr, dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
 
       // Initialize particles
@@ -362,6 +359,7 @@ export const ParticleTransition = forwardRef<ParticleTransitionHandle>((_, ref) 
       const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
       canvasRef.current.width = Math.round(window.innerWidth * dpr);
       canvasRef.current.height = Math.round(window.innerHeight * dpr);
+      canvasRef.current.getContext('2d')?.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     window.addEventListener('resize', handleResize);

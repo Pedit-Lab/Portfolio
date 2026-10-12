@@ -54,6 +54,18 @@ svg{flex-shrink:0}
 .input-field:focus{outline:none;border-color:#397de9;box-shadow:0 0 0 4px #397de912}
 .skip-link{position:fixed;top:-100px;left:20px;z-index:200;background:#2064ef;color:white;padding:12px 20px;border-radius:8px}
 .skip-link:focus{top:12px}
+/* Full-screen opening film. The portfolio mounts only after this exits, so the
+   hero hand animation always begins from its first frame. */
+.site-video-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#0d4e73;opacity:1;overflow:hidden;animation:intro-frame-color 5.5s ease-in-out infinite alternate;transition:opacity .65s cubic-bezier(.22,1,.36,1)}
+.site-video-intro--leaving{opacity:0;pointer-events:none}
+.site-video-intro__stage{position:relative;z-index:1;width:min(100vw,177.778vh);height:min(100vh,56.25vw);aspect-ratio:16/9;overflow:hidden;background:#0d4e73}
+.site-video-intro__video{width:100%;height:100%;object-fit:contain}
+.site-video-intro__stage::before,.site-video-intro__stage::after{content:'';position:absolute;z-index:2;top:0;bottom:0;width:8.4%;background:#0d4e73;animation:intro-frame-color 5.5s ease-in-out infinite alternate;pointer-events:none}
+.site-video-intro__stage::before{left:0}
+.site-video-intro__stage::after{right:0}
+.site-video-intro__skip{position:absolute;z-index:3;left:clamp(18px,3vw,42px);bottom:clamp(18px,3vw,38px);padding:10px 16px;border:1px solid #ffffff52;border-radius:999px;background:#06101db8;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.7px;backdrop-filter:blur(12px);transition:background .2s,border-color .2s,transform .2s}
+.site-video-intro__skip:hover{background:#10243fd9;border-color:#ffffff8a;transform:translateY(-2px)}
+@keyframes intro-frame-color{0%{background-color:#092f50}45%{background-color:#12658c}100%{background-color:#238fba}}
 /* Floating, glass navigation */
 .premium-header{position:fixed!important;inset:16px 24px auto;z-index:50;border:1px solid var(--color-border-color);border-radius:16px;background:color-mix(in srgb,var(--color-bg-primary) 82%,transparent);backdrop-filter:blur(22px);box-shadow:0 10px 40px #0002;padding:14px 0;transition:background .2s,padding .2s,transform .42s cubic-bezier(.22,1,.36,1),opacity .3s ease}
 .premium-header.nav-is-hidden{transform:translateY(calc(-100% - 36px));opacity:0;pointer-events:none}
@@ -470,15 +482,25 @@ a[href*="netlify.com"][target="_blank"]:has(img) {
 }
 @media(max-width:600px){
   .container-custom{padding-inline:clamp(16px,5.5vw,22px)}
+  #hero{min-height:100svh!important;position:relative}
+  #hero>.container-custom{position:relative;z-index:2}
+  #hero .hero-grid{position:relative;display:block!important;min-height:calc(100svh - 145px)}
+  #hero .hero-copy{position:relative;z-index:3}
   .hero-copy h1{font-size:clamp(2.25rem,11vw,3.15rem)!important;letter-spacing:-2px!important}
   .hero-rotating-title{min-height:4.2em}
   .section-intro h2{font-size:clamp(2rem,10vw,2.5rem)!important;letter-spacing:-1.4px!important}
   .about-copy h2,.cta-section h2{font-size:clamp(2rem,10vw,2.5rem)!important;letter-spacing:-1.4px!important}
   .hero-depth-hand{width:min(760px,118vw)}
   .cta-section>.container-custom>.glass-card{padding:28px 18px!important}
-  .hero-highlights{height:106px!important}
-  .hero-highlight-card{--orbit-radius:102px;width:min(238px,74vw);padding:12px 14px}
-  .hero-orbit-ring{width:290px}
+  .hero-highlights{display:block!important;position:relative;z-index:4;height:106px!important;opacity:.68;pointer-events:none}
+  .hero-highlight-card{--orbit-radius:102px;width:min(238px,74vw);padding:12px 14px;background:color-mix(in srgb,var(--color-bg-primary) 16%,transparent);border-color:color-mix(in srgb,var(--highlight-color) 24%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--highlight-color) 8%,transparent);backdrop-filter:blur(3px)}
+  .hero-highlight-icon{background:color-mix(in srgb,var(--highlight-color) 6%,transparent);box-shadow:none}
+  .hero-orbit-ring{width:290px;opacity:.35}
+  #hero .hero-art{position:absolute!important;z-index:0;inset:25% -18% auto!important;width:136%!important;height:min(126vw,560px)!important;margin:0!important;opacity:.065;pointer-events:none;filter:saturate(.68)}
+  #hero .hero-art>.glass-card{height:100%;animation:sculpture-drift 9s ease-in-out infinite!important}
+  #hero .hero-art-stage{height:100%!important;aspect-ratio:1!important}
+  #hero .hero-art-stage>img{width:120%!important;height:100%!important;left:-10%!important;top:0!important;opacity:.62;mix-blend-mode:screen;filter:saturate(.68) brightness(.68)}
+  #hero .hero-art-stage>div:last-child,#hero .hero-art>div:last-child:not(.glass-card){display:none!important}
 }
 @media(prefers-reduced-motion:reduce){
   .hero-highlight-card{display:none;animation:none!important}
