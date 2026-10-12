@@ -14,9 +14,16 @@ if ('scrollRestoration' in history) {
 
 const resetInitialScroll = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
 
-// Preserve deep links such as /#services and /#student-support. Only force Home
-// when the visitor opened the site without a section target.
-if (!window.location.hash) {
+const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+const isPortfolioReload = window.location.pathname === '/' && navigationEntry?.type === 'reload'
+
+// A browser refresh from any portfolio section always restarts at Home. Normal
+// navigation from Pricing keeps its hash so it can return to the source section.
+if (isPortfolioReload && window.location.hash) {
+  history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}`)
+}
+
+if (!window.location.hash || isPortfolioReload) {
   resetInitialScroll()
   requestAnimationFrame(() => {
     resetInitialScroll()

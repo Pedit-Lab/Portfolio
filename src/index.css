@@ -181,7 +181,7 @@ svg{flex-shrink:0}
 @keyframes about-icon-chip{0%,100%{transform:rotateZ(-3deg) scale(.96)}50%{transform:rotateZ(3deg) scale(1.08);filter:drop-shadow(0 0 5px currentColor)}}
 @keyframes about-icon-tilt{0%,100%{transform:perspective(80px) rotateY(-12deg)}50%{transform:perspective(80px) rotateY(12deg) translateY(-2px)}}
 /* Questions and answers */
-.faq-section{position:relative;min-height:100svh;padding:105px 0!important;display:flex;align-items:center;overflow:hidden;scroll-margin-top:110px}
+.faq-section{position:relative;min-height:100svh;padding:105px 0!important;display:flex;align-items:center;overflow:hidden;scroll-margin-top:0}
 .faq-section>.container-custom{width:100%}
 .faq-layout{display:grid;grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);gap:clamp(45px,7vw,100px);align-items:start}
 .faq-intro{position:sticky;top:130px}
@@ -204,7 +204,7 @@ svg{flex-shrink:0}
 .faq-answer p{padding:0 58px 26px 63px;color:var(--color-text-secondary);font-size:.85rem;line-height:1.85;opacity:0;transform:translateY(-8px);transition:opacity .32s ease,transform .42s cubic-bezier(.22,1,.36,1)}
 .faq-item.is-open .faq-answer p{opacity:1;transform:translateY(0)}
 @media(max-width:900px){.faq-section{align-items:flex-start}.faq-layout{grid-template-columns:minmax(0,1fr);gap:38px}.faq-intro{position:relative;top:auto}.faq-intro h2{max-width:620px}.faq-intro>p{max-width:620px}}
-@media(max-width:600px){.faq-section{min-height:100svh;padding:65px 0!important;scroll-margin-top:85px}.faq-question{grid-template-columns:29px minmax(0,1fr) 24px;gap:10px;padding:21px 5px}.faq-answer p{padding:0 34px 22px 39px;font-size:.8rem}.faq-intro h2{font-size:clamp(2.15rem,10vw,2.75rem);letter-spacing:-1.8px}.faq-contact-link{margin-top:22px}}
+@media(max-width:600px){.faq-section{min-height:100svh;padding:105px 0 65px!important;scroll-margin-top:0}.faq-question{grid-template-columns:29px minmax(0,1fr) 24px;gap:10px;padding:21px 5px}.faq-answer p{padding:0 34px 22px 39px;font-size:.8rem}.faq-intro h2{font-size:clamp(2.15rem,10vw,2.75rem);letter-spacing:-1.8px}.faq-contact-link{margin-top:22px}}
 /* Services: full-width software story, three equal technical cards, compact design */
 #services{background:var(--color-bg-primary)!important}
 #services{min-height:100svh;display:flex;align-items:center}
@@ -355,9 +355,18 @@ svg{flex-shrink:0}
 .testimonials .glass-card>div:last-child p{font-size:.72rem!important;line-height:1.6!important}
 .testimonials svg{width:13px;height:13px}
 /* Call to action: broad electric-blue panel */
-.cta-section{padding:0 0 100px!important;background:var(--color-bg-primary)!important}
-.cta-section>.container-custom>.glass-card{background:linear-gradient(115deg,#14397c,#1a55ca 63%,#126bcb);padding:70px!important;border:1px solid #366fbe!important;border-radius:16px!important;box-shadow:none!important;text-align:left!important}
-.cta-section .glass-card>div:last-child{max-width:none!important}
+.cta-section{min-height:100svh;padding:90px 0!important;display:flex;align-items:center;background:var(--color-bg-primary)!important;overflow:hidden}
+.cta-section>.container-custom{width:100%}
+.cta-section>.container-custom>.glass-card{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(38px,5vw,76px);align-items:center;background:linear-gradient(115deg,#14397c,#1a55ca 63%,#126bcb);padding:58px 65px!important;border:1px solid #366fbe!important;border-radius:16px!important;box-shadow:none!important;text-align:left!important}
+.cta-section .cta-copy{max-width:none!important;margin:0!important;grid-column:2}
+.cta-visual{position:relative;z-index:2;grid-column:1;grid-row:1;width:100%;min-height:410px;display:grid;place-items:center;overflow:hidden;border-radius:14px;background:radial-gradient(circle at 50% 48%,#7de8ff3d,transparent 52%),#061c3a45;border:1px solid #8ddfff35}
+.cta-visual img{position:relative;z-index:2;width:112%;max-width:none;height:100%;object-fit:contain;filter:drop-shadow(0 24px 45px #00143199);animation:cta-visual-float 7s ease-in-out infinite}
+.cta-visual::before{content:'';position:absolute;inset:12%;border:1px solid #8aeaff42;border-radius:50%;animation:cta-orbit-spin 14s linear infinite}
+.cta-visual-orbit{position:absolute;z-index:1;border:1px dashed #9eefff4f;border-radius:50%;animation:cta-orbit-spin 18s linear infinite reverse}
+.cta-visual-orbit-one{inset:22% 8%}
+.cta-visual-orbit-two{inset:8% 27%;animation-duration:12s}
+@keyframes cta-visual-float{0%,100%{transform:translateY(7px) scale(.98)}50%{transform:translateY(-9px) scale(1.015)}}
+@keyframes cta-orbit-spin{to{transform:rotate(360deg)}}
 .cta-section h2{font-size:clamp(2.5rem,4.2vw,4rem)!important;color:#fff!important;max-width:770px;letter-spacing:-2.5px}
 .cta-section p{color:#c7dcfc!important;max-width:740px;font-size:1rem!important;line-height:1.85!important}
 .cta-section .glass-card>div:last-child>div:first-child{background:transparent!important;border:0!important;padding:0!important}
@@ -366,6 +375,8 @@ svg{flex-shrink:0}
 .cta-section .btn-primary{background:white;color:#16458c;font-size:.9rem!important;box-shadow:none}
 .cta-section .btn-secondary{color:white;border-color:#8ebaff66;font-size:.9rem!important}
 .cta-section .btn-secondary svg{color:white!important}
+@media(max-width:900px){.cta-section>.container-custom>.glass-card{grid-template-columns:minmax(0,1fr);padding:40px!important}.cta-section .cta-copy{grid-column:1;grid-row:2}.cta-visual{grid-column:1;grid-row:1;min-height:330px}}
+@media(max-width:600px){.cta-section>.container-custom>.glass-card{padding:24px 20px!important;gap:28px}.cta-visual{min-height:250px}.cta-visual img{width:122%}}
 /* Contact: editorial white section and an elevated form */
 #contact{background:var(--editorial-bg)!important;color:var(--color-text-primary)}
 .contact-grid{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)!important;gap:72px!important}

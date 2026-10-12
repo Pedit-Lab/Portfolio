@@ -62,6 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
     { name: 'Projects', href: '/#products' },
     { name: 'Impact', href: '/#impact' },
     { name: 'FAQ', href: '/#faq' },
+    { name: 'Start Project', href: '/#cta' },
     { name: 'Contact Us', href: '/#contact' },
   ];
 

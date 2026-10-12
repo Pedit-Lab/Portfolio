@@ -8,7 +8,7 @@ interface CallToActionProps {
 }
 
 export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
 
   return (
     <section id="cta" className="cta-section premium-section"
@@ -48,7 +48,16 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
             }}
           />
 
-          <div style={{ position: 'relative', zIndex: 2, maxWidth: '800px', margin: '0 auto' }}>
+          <div className="cta-visual" aria-hidden="true">
+            <img
+              src={mode === 'dark' ? '/visuals/innovation-lab-dark.svg' : '/visuals/innovation-lab.svg'}
+              alt=""
+            />
+            <span className="cta-visual-orbit cta-visual-orbit-one" />
+            <span className="cta-visual-orbit cta-visual-orbit-two" />
+          </div>
+
+          <div className="cta-copy" style={{ position: 'relative', zIndex: 2, maxWidth: '800px' }}>
             <div
               style={{
                 display: 'inline-flex',
