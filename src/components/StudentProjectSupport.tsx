@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Brain, CheckCircle2, Cloud, Code2, Cpu, FileText, GraduationCap } from 'lucide-react';
+import { ArrowRight, Brain, CheckCircle2, Cloud, Code2, Cpu, FileText, GraduationCap, Microscope, Tag } from 'lucide-react';
 import { AnimatedBackground } from './AnimatedBackground';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,6 +12,7 @@ export const StudentProjectSupport: React.FC = () => {
     { icon: <Cpu size={20} />, title: 'Embedded & IoT', text: 'Arduino, ESP32, sensors, and connectivity.' },
     { icon: <Cloud size={20} />, title: 'Cloud & Databases', text: 'Architecture, hosting, data, and deployment.' },
     { icon: <FileText size={20} />, title: 'Documentation & Presentation', text: 'Clear reports, demos, and presentation coaching.' },
+    { icon: <Microscope size={20} />, title: 'Research Support', text: 'Literature, methodology, analysis, citations, and research guidance.' },
   ];
 
   return (
@@ -60,9 +61,14 @@ export const StudentProjectSupport: React.FC = () => {
               <span>We mentor and guide. Students understand and submit their own academic work.</span>
             </div>
 
-            <a href="#contact" className="btn-primary student-support-cta">
-              <span>Discuss Your Project</span><ArrowRight size={18} />
-            </a>
+            <div className="student-support-actions">
+              <a href="#contact" className="btn-primary student-support-cta">
+                <span>Discuss Your Project</span><ArrowRight size={18} />
+              </a>
+              <a href="/pricing?audience=student" className="btn-secondary student-support-cta">
+                <Tag size={17} /><span>Student Pricing</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

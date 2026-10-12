@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Mail, MapPin, Phone, Send, CheckCircle2, Clock, MessageSquare } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { envConfig } from '../config/env';
+import emailjs from '@emailjs/browser';
 
 export const ContactSection: React.FC = () => {
   const { colors } = useTheme();
@@ -17,22 +18,52 @@ export const ContactSection: React.FC = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
+    setSubmitError('');
+
+    if (!envConfig.emailjsServiceId || !envConfig.emailjsTemplateId || !envConfig.emailjsPublicKey) {
       setSubmitting(false);
+      setSubmitError('Email service is not configured yet. Please contact us through WhatsApp.');
+      return;
+    }
+
+    const cleanPhone = formData.phone.replace(/[^\d]/g, '');
+    const userWhatsapp = cleanPhone ? `https://wa.me/${cleanPhone}` : 'Not provided';
+
+    try {
+      await emailjs.send(
+        envConfig.emailjsServiceId,
+        envConfig.emailjsTemplateId,
+        {
+          inquiry_type: 'Website Contact Inquiry',
+          user_name: formData.name,
+          user_email: formData.email,
+          reply_to: formData.email,
+          user_phone: formData.phone || 'Not provided',
+          user_whatsapp: userWhatsapp,
+          service_name: formData.service,
+          budget: formData.budget,
+          message: formData.message,
+          to_email: envConfig.companyEmail,
+        },
+        envConfig.emailjsPublicKey,
+      );
+
       setSubmitted(true);
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: 'Custom Software Development',
-        budget: '$5,000 - $15,000',
-        message: '',
+        name: '', email: '', phone: '', service: 'Custom Software Development',
+        budget: '$5,000 - $15,000', message: '',
       });
-    }, 1200);
+    } catch (error) {
+      console.error('Contact email failed:', error);
+      setSubmitError('The message could not be sent. Please try again or contact us on WhatsApp.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -173,7 +204,10 @@ export const ContactSection: React.FC = () => {
               </div>
 
               {/* Phone Card */}
-              <div
+              <a
+                href={`https://wa.me/${envConfig.whatsappNumber}`}
+                target="_blank"
+                rel="noreferrer"
                 className="glass-card"
                 style={{
                   padding: '24px',
@@ -181,6 +215,7 @@ export const ContactSection: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '16px',
+                  textDecoration: 'none',
                 }}
               >
                 <div
@@ -205,7 +240,7 @@ export const ContactSection: React.FC = () => {
                     {envConfig.companyPhone}
                   </span>
                 </div>
-              </div>
+              </a>
             </div>
 
             {/* Operating SLA Banner */}
@@ -433,6 +468,14 @@ export const ContactSection: React.FC = () => {
                     </>
                   )}
                 </button>
+                {submitError && (
+                  <p role="alert" style={{ margin: 0, color: '#fb7185', fontSize: '0.8rem', lineHeight: 1.55 }}>
+                    {submitError}{' '}
+                    <a href={`https://wa.me/${envConfig.whatsappNumber}`} target="_blank" rel="noreferrer" style={{ color: colors.primary, fontWeight: 700 }}>
+                      Open WhatsApp
+                    </a>
+                  </p>
+                )}
               </form>
             )}
           </div>

@@ -12,6 +12,7 @@ import type { InnovationProduct } from './components/ProductsInnovations';
 import { GlobalImpactStats } from './components/GlobalImpactStats';
 import { CallToAction } from './components/CallToAction';
 import { ContactSection } from './components/ContactSection';
+import { FrequentlyAskedQuestions } from './components/FrequentlyAskedQuestions';
 import { Footer } from './components/Footer';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
@@ -66,7 +67,8 @@ function VideoIntro({ onComplete }: { onComplete: () => void }) {
 }
 
 function PortfolioEntry() {
-  const [introComplete, setIntroComplete] = useState(false);
+  // Section deep links are return navigation, so do not replay the opening film.
+  const [introComplete, setIntroComplete] = useState(() => Boolean(window.location.hash));
 
   return introComplete
     ? <Portfolio />
@@ -81,6 +83,17 @@ function Portfolio() {
   const [product, setProduct] = useState<InnovationProduct | null>(null);
 
   useSectionTransition({ particleRef, activeSection });
+
+  useEffect(() => {
+    const targetId = window.location.hash.slice(1);
+    if (!targetId || targetId === 'hero') return;
+
+    const scrollToTarget = () => {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    };
+    const frame = window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToTarget));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const goToContact = () => {
     setService(null);
@@ -130,6 +143,7 @@ function Portfolio() {
       <WhyChooseUs />
       <ProductsInnovations onOpenProductModal={setProduct} />
       <GlobalImpactStats />
+      <FrequentlyAskedQuestions />
       <CallToAction onOpenQuote={goToContact} />
       <ContactSection />
     </main>

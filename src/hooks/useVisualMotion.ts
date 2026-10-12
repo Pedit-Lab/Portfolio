@@ -64,6 +64,7 @@ export function useVisualMotion() {
         '.concept-project',
         '.advantage-card',
         '.metric-value',
+        '.faq-list',
         '.contact-grid',
       ].join(',')).forEach(element => observer?.observe(element));
     };

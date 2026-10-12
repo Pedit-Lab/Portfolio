@@ -12,23 +12,23 @@ if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual'
 }
 
-if (window.location.hash) {
-  history.replaceState(history.state, '', `${window.location.pathname}${window.location.search}`)
-}
-
 const resetInitialScroll = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
 
-resetInitialScroll()
-requestAnimationFrame(() => {
+// Preserve deep links such as /#services and /#student-support. Only force Home
+// when the visitor opened the site without a section target.
+if (!window.location.hash) {
   resetInitialScroll()
-  requestAnimationFrame(resetInitialScroll)
-})
+  requestAnimationFrame(() => {
+    resetInitialScroll()
+    requestAnimationFrame(resetInitialScroll)
+  })
 
-window.addEventListener('DOMContentLoaded', resetInitialScroll, { once: true })
-window.addEventListener('load', resetInitialScroll, { once: true })
-window.addEventListener('pageshow', resetInitialScroll, { once: true })
-window.setTimeout(resetInitialScroll, 150)
-window.setTimeout(resetInitialScroll, 500)
+  window.addEventListener('DOMContentLoaded', resetInitialScroll, { once: true })
+  window.addEventListener('load', resetInitialScroll, { once: true })
+  window.addEventListener('pageshow', resetInitialScroll, { once: true })
+  window.setTimeout(resetInitialScroll, 150)
+  window.setTimeout(resetInitialScroll, 500)
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

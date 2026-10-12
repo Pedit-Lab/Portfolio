@@ -194,6 +194,106 @@ export const SERVICES: Service[] = [
   },
 ];
 
+const studentPlans = (
+  basicPrice: number,
+  standardPrice: number,
+  premiumPrice: number,
+  focus: string,
+): Plan[] => [
+  {
+    id: 'basic', name: 'Guided Start', price: basicPrice, days: 3,
+    features: [`${focus} scope review`, 'One-to-one guidance session', 'Action plan and references', '1 revision'],
+    included: { revision: 1, mentoring: 1 },
+  },
+  {
+    id: 'standard', name: 'Project Support', price: standardPrice, days: 7, popular: true,
+    features: [`Hands-on ${focus.toLowerCase()} support`, 'Milestone reviews', 'Testing and feedback', 'Documentation guidance', '2 revisions'],
+    included: { revision: 2, mentoring: 2, review: 2 },
+  },
+  {
+    id: 'premium', name: 'Final-Year Plus', price: premiumPrice, days: 14,
+    features: [`End-to-end ${focus.toLowerCase()} mentoring`, 'Weekly progress reviews', 'Report and presentation guidance', 'Demo and viva preparation', '3 revisions'],
+    included: { revision: 3, mentoring: 4, review: 4, viva: 1 },
+  },
+];
+
+const studentAddons = (special: Addon[]): Addon[] => [
+  ...special,
+  a('mentoring', 'Extra mentoring session', '1 hour', 1500, 0),
+  a('review', 'Extra milestone review', '1 review', 1000, 1),
+  a('slides', 'Presentation slide guidance', '10 slides', 1500, 1),
+  a('viva', 'Mock viva / demo session', '1 hour', 1800, 0),
+  a('revision', 'Extra feedback round', '1 round', 900, 1),
+  a('express', 'Priority review', '1 day saved', 1500, -1),
+];
+
+/** Student-only catalogue selected from the University Project Support section. */
+export const STUDENT_SERVICES: Service[] = [
+  {
+    id: 'student-planning', name: 'Topic & Project Planning',
+    plans: studentPlans(3500, 8000, 15000, 'Project planning'),
+    addons: studentAddons([
+      a('proposal', 'Proposal structure review', '1 proposal', 1800, 1),
+      a('roadmap', 'Detailed milestone roadmap', '1 roadmap', 1500, 1),
+    ]),
+  },
+  {
+    id: 'student-software', name: 'Software Development Support',
+    plans: studentPlans(6000, 16000, 32000, 'Software development'),
+    addons: studentAddons([
+      a('module', 'Additional feature guidance', '1 module', 2200, 2),
+      a('debug', 'Debugging support session', '1 session', 1800, 1),
+      a('deploy', 'Deployment guidance', '1 setup', 2200, 1),
+    ]),
+  },
+  {
+    id: 'student-ai', name: 'AI & Data Project Support',
+    plans: studentPlans(7500, 20000, 40000, 'AI and data project'),
+    addons: studentAddons([
+      a('dataset', 'Dataset review and preparation', '1 dataset', 2500, 2),
+      a('model', 'Extra model evaluation', '1 model', 2200, 2),
+      a('notebook', 'Notebook review', '1 notebook', 1500, 1),
+    ]),
+  },
+  {
+    id: 'student-iot', name: 'Embedded & IoT Support',
+    plans: studentPlans(6500, 18000, 36000, 'Embedded and IoT project'),
+    addons: studentAddons([
+      a('sensor', 'Extra sensor integration guidance', '1 sensor', 1800, 1),
+      a('circuit', 'Circuit review', '1 design', 2000, 1),
+      a('cloud', 'IoT cloud connection guidance', '1 setup', 2200, 2),
+    ]),
+  },
+  {
+    id: 'student-cloud', name: 'Cloud & Database Support',
+    plans: studentPlans(5000, 14000, 28000, 'Cloud and database project'),
+    addons: studentAddons([
+      a('schema', 'Database schema review', '1 schema', 1600, 1),
+      a('api', 'API integration guidance', '1 API', 2200, 2),
+      a('hosting', 'Hosting setup guidance', '1 setup', 2000, 1),
+    ]),
+  },
+  {
+    id: 'student-documentation', name: 'Documentation & Presentation',
+    plans: studentPlans(3000, 7500, 14000, 'Academic documentation'),
+    addons: studentAddons([
+      a('chapter', 'Additional chapter review', '1 chapter', 1400, 1),
+      a('format', 'University format compliance review', '1 report', 1800, 1),
+      a('poster', 'Research poster guidance', '1 poster', 1500, 1),
+    ]),
+  },
+  {
+    id: 'student-research', name: 'Research Support',
+    plans: studentPlans(4500, 12000, 24000, 'Research'),
+    addons: studentAddons([
+      a('literature', 'Literature review guidance', '1 section', 2200, 2),
+      a('methodology', 'Methodology review', '1 section', 2200, 2),
+      a('analysis', 'Results and analysis guidance', '1 dataset', 2500, 2),
+      a('citation', 'Citation and reference audit', '1 document', 1500, 1),
+    ]),
+  },
+];
+
 //Helpers
 export const formatLKR = (n: number): string => 'LKR ' + n.toLocaleString('en-LK');
 
@@ -279,5 +379,50 @@ export const CATEGORIES: Record<string, Category[]> = {
     { id: 'api', name: 'API Development', desc: 'REST APIs, third-party integration', icon: '🔌' },
     { id: 'security', name: 'Cyber Security', desc: 'Hardening, pen-testing basics, firewalls', icon: '🔒' },
     { id: 'devops', name: 'DevOps', desc: 'Docker, CI/CD, deployment pipelines', icon: '🚀' },
+  ],
+};
+
+export const STUDENT_CATEGORIES: Record<string, Category[]> = {
+  'student-planning': [
+    { id: 'topic', name: 'Topic validation', desc: 'Refine a feasible project topic', icon: '🎯' },
+    { id: 'scope', name: 'Scope definition', desc: 'Clear objectives and boundaries', icon: '🧭' },
+    { id: 'proposal', name: 'Proposal guidance', desc: 'Structure and review support', icon: '📋' },
+    { id: 'roadmap', name: 'Milestone roadmap', desc: 'A practical delivery plan', icon: '🗓️' },
+  ],
+  'student-software': [
+    { id: 'web', name: 'Web & mobile apps', desc: 'Implementation guidance', icon: '💻' },
+    { id: 'api', name: 'APIs & backend', desc: 'Architecture and debugging', icon: '⚙️' },
+    { id: 'test', name: 'Testing', desc: 'Test planning and review', icon: '🧪' },
+    { id: 'deploy', name: 'Deployment', desc: 'Hosting guidance', icon: '🚀' },
+  ],
+  'student-ai': [
+    { id: 'ml', name: 'Machine learning', desc: 'Model selection and evaluation', icon: '🧠' },
+    { id: 'genai', name: 'Generative AI', desc: 'LLM and RAG guidance', icon: '✨' },
+    { id: 'data', name: 'Data analysis', desc: 'Cleaning and visualization', icon: '📊' },
+    { id: 'demo', name: 'Demo preparation', desc: 'Present results clearly', icon: '🎬' },
+  ],
+  'student-iot': [
+    { id: 'embedded', name: 'Arduino & ESP32', desc: 'Firmware guidance', icon: '🔧' },
+    { id: 'sensor', name: 'Sensors', desc: 'Integration and testing', icon: '🌡️' },
+    { id: 'connect', name: 'Connectivity', desc: 'WiFi, BLE and MQTT', icon: '📡' },
+    { id: 'circuit', name: 'Circuit review', desc: 'Safer, clearer designs', icon: '🔌' },
+  ],
+  'student-cloud': [
+    { id: 'db', name: 'Database design', desc: 'SQL and NoSQL guidance', icon: '🗄️' },
+    { id: 'cloud', name: 'Cloud architecture', desc: 'AWS, Azure and Firebase', icon: '☁️' },
+    { id: 'hosting', name: 'Hosting', desc: 'Deployment walkthrough', icon: '🌐' },
+    { id: 'security', name: 'Security review', desc: 'Access and backup basics', icon: '🔐' },
+  ],
+  'student-documentation': [
+    { id: 'report', name: 'Report structure', desc: 'Clear academic writing', icon: '📄' },
+    { id: 'slides', name: 'Presentation', desc: 'Slides and storytelling', icon: '🖼️' },
+    { id: 'demo', name: 'Demo coaching', desc: 'Confident project walkthrough', icon: '🎤' },
+    { id: 'viva', name: 'Viva preparation', desc: 'Practice questions', icon: '🎓' },
+  ],
+  'student-research': [
+    { id: 'literature', name: 'Literature review', desc: 'Search and synthesis guidance', icon: '📚' },
+    { id: 'method', name: 'Methodology', desc: 'Research design feedback', icon: '🔬' },
+    { id: 'analysis', name: 'Results analysis', desc: 'Interpretation guidance', icon: '📈' },
+    { id: 'citation', name: 'References', desc: 'Citation quality review', icon: '🔖' },
   ],
 };

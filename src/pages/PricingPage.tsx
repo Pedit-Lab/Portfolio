@@ -4,9 +4,10 @@ import emailjs from '@emailjs/browser';
 import { useTheme } from '../context/ThemeContext';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { SERVICES, calcBill, formatLKR, formatDays, formatAddonDays, getIncludedQty, CATEGORIES } from '../data/pricing';
+import { SERVICES, STUDENT_SERVICES, calcBill, formatLKR, formatDays, formatAddonDays, getIncludedQty, CATEGORIES, STUDENT_CATEGORIES } from '../data/pricing';
 import type { Plan } from '../data/pricing';
 import './PricingPage.css';
+import { envConfig } from '../config/env';
 
 import imgSoftware from '../assets/se.png';
 import imgAiml from '../assets/ai.png';
@@ -15,7 +16,6 @@ import imgDbcloud from '../assets/cloud.png';
 import imgDataai from '../assets/data.png';
 import imgNetwork from '../assets/network.png';
 
-const WHATSAPP_NUMBER = '94770326202';
 const MAX_ADDON_QTY = 10;
 
 const SERVICE_IMAGES: Record<string, string> = {
@@ -25,6 +25,13 @@ const SERVICE_IMAGES: Record<string, string> = {
   dbcloud: imgDbcloud,
   dataai: imgDataai,
   network: imgNetwork,
+  'student-planning': imgSoftware,
+  'student-software': imgSoftware,
+  'student-ai': imgAiml,
+  'student-iot': imgIot,
+  'student-cloud': imgDbcloud,
+  'student-documentation': imgDataai,
+  'student-research': imgDataai,
 };
 
 const STEPS = [
@@ -33,13 +40,16 @@ const STEPS = [
   { n: 3, label: 'Checkout' },
 ];
 
-type Errors = { name?: string; email?: string; phone?: string };
+type Errors = { name?: string; email?: string; phone?: string; figmaUrl?: string };
 
 export default function PricingPage() {
   const { colors } = useTheme();
   const [searchParams] = useSearchParams();
+  const isStudentPricing = searchParams.get('audience') === 'student';
+  const pricingServices = isStudentPricing ? STUDENT_SERVICES : SERVICES;
+  const pricingCategories = isStudentPricing ? STUDENT_CATEGORIES : CATEGORIES;
   const urlService = searchParams.get('service');
-  const validUrlService = urlService && SERVICES.some((s) => s.id === urlService) ? urlService : null;
+  const validUrlService = urlService && pricingServices.some((s) => s.id === urlService) ? urlService : null;
 
   // step: 1 = service, 2 = plan + addons, 3 = checkout, 4 = success
   const [step, setStep] = useState<1 | 2 | 3 | 4>(validUrlService ? 2 : 1);
@@ -47,7 +57,8 @@ export default function PricingPage() {
   const [planId, setPlanId] = useState<string>('standard');
   const [qtyMap, setQtyMap] = useState<Record<string, number>>({});
 
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', notes: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', notes: '', figmaUrl: '' });
+  const [projectDocument, setProjectDocument] = useState<File | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderRef, setOrderRef] = useState('');
@@ -57,7 +68,7 @@ export default function PricingPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step]);
 
-  const service = SERVICES.find((s) => s.id === serviceId) ?? null;
+  const service = pricingServices.find((s) => s.id === serviceId) ?? null;
   const plan: Plan | null = service ? service.plans.find((p) => p.id === planId) ?? service.plans[1] : null;
   const bill = useMemo(
     () => (service && plan ? calcBill(service, plan, qtyMap) : null),
@@ -105,9 +116,21 @@ export default function PricingPage() {
 
   const validate = (): boolean => {
     const e: Errors = {};
-    if (!formData.name.trim()) e.name = 'Please enter your name or university.';
+    if (!formData.name.trim()) {
+      e.name = isStudentPricing
+        ? 'Please enter your name and university.'
+        : 'Please enter your name or company.';
+    }
     if (!/^\S+@\S+\.\S+$/.test(formData.email)) e.email = 'Please enter a valid email address.';
     if (formData.phone.replace(/[^\d]/g, '').length < 9) e.phone = 'Please enter a valid WhatsApp number.';
+    if (formData.figmaUrl.trim()) {
+      try {
+        const url = new URL(formData.figmaUrl.trim());
+        if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Invalid protocol');
+      } catch {
+        e.figmaUrl = 'Please enter a valid Figma or design URL.';
+      }
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -127,29 +150,37 @@ export default function PricingPage() {
     const ref = 'PL-' + Date.now().toString(36).toUpperCase().slice(-6);
 
     try {
+      if (!envConfig.emailjsServiceId || !envConfig.emailjsTemplateId || !envConfig.emailjsPublicKey) {
+        throw new Error('EmailJS is not configured');
+      }
       await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
+        envConfig.emailjsServiceId,
+        envConfig.emailjsTemplateId,
         {
           order_ref: ref,
           user_name: formData.name,
           user_email: formData.email,
+          reply_to: formData.email,
           user_phone: formData.phone,
+          user_whatsapp: `https://wa.me/${formData.phone.replace(/[^\d]/g, '')}`,
+          to_email: envConfig.companyEmail,
           service_name: service.name,
           package_name: `${plan.name} (${formatLKR(plan.price)})`,
           addons: addonLines,
           total_price: formatLKR(bill.total),
           duration: formatDays(bill.days),
-          message: formData.notes || 'Order placed from Pricing Page',
+          message: formData.notes || (isStudentPricing ? 'University project support request' : 'Order placed from Pricing Page'),
+          figma_link: formData.figmaUrl || 'Not provided',
+          document_name: projectDocument?.name || 'Not provided',
         },
-        'YOUR_PUBLIC_KEY'
+        envConfig.emailjsPublicKey
       );
     } catch (error) {
       console.error('Email sending failed:', error);
     }
 
     const msg =
-      `*New Order Request!* (${ref})\n\n` +
+      `*${isStudentPricing ? 'New University Support Request' : 'New Order Request'}!* (${ref})\n\n` +
       `*Client:* ${formData.name}\n` +
       `*Email:* ${formData.email}\n` +
       `*Phone:* ${formData.phone}\n\n` +
@@ -158,9 +189,11 @@ export default function PricingPage() {
       `*Add-ons:*\n${addonLines}\n\n` +
       `*Total:* ${formatLKR(bill.total)}\n` +
       `*Estimated Duration:* ${formatDays(bill.days)}\n\n` +
-      `*Project Notes:* ${formData.notes || 'N/A'}`;
+      `*Project Brief:* ${formData.notes || 'N/A'}\n` +
+      `*Figma / Design Link:* ${formData.figmaUrl || 'N/A'}\n` +
+      `*Supporting Document:* ${projectDocument?.name || 'N/A'}${projectDocument ? '\n_(Please attach this document in the WhatsApp chat.)_' : ''}`;
 
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    const url = `https://wa.me/${envConfig.whatsappNumber}?text=${encodeURIComponent(msg)}`;
 
     setOrderRef(ref);
     setWhatsappUrl(url);
@@ -174,7 +207,8 @@ export default function PricingPage() {
     setServiceId(null);
     setPlanId('standard');
     setQtyMap({});
-    setFormData({ name: '', email: '', phone: '', notes: '' });
+    setFormData({ name: '', email: '', phone: '', notes: '', figmaUrl: '' });
+    setProjectDocument(null);
     setErrors({});
     setOrderRef('');
     setWhatsappUrl('');
@@ -301,8 +335,16 @@ export default function PricingPage() {
         <div className="container-custom">
           <div className="wz-header-row">
             <div className="wz-head">
-              <h2>Service packages</h2>
-              <p>Create your package with adding services what you want </p>
+              <a
+                className="wz-return-link"
+                href={isStudentPricing ? '/#student-support' : '/#services'}
+              >
+                ← Back to {isStudentPricing ? 'Student Support' : 'Services'}
+              </a>
+              <h2>{isStudentPricing ? 'University project support' : 'Service packages'}</h2>
+              <p>{isStudentPricing
+                ? 'Choose the academic support you need and build a student-friendly guidance package.'
+                : 'Create your package with adding services what you want'}</p>
             </div>
             {step <= 3 && <Stepper />}
           </div>
@@ -311,7 +353,7 @@ export default function PricingPage() {
           {step === 1 && (
             <div key="step1" className="wz-view">
               <div className="wz-services">
-                {SERVICES.map((s) => {
+                {pricingServices.map((s) => {
                   const selected = serviceId === s.id;
                   return (
                     <button
@@ -325,7 +367,7 @@ export default function PricingPage() {
                       <img className="wz-service-image" src={SERVICE_IMAGES[s.id]} alt="" aria-hidden="true" />
                       <h3>{s.name}</h3>
                       <ul className="wz-service-tags">
-                        {CATEGORIES[s.id]?.slice(0, 5).map((cat, idx) => (
+                        {pricingCategories[s.id]?.slice(0, 5).map((cat, idx) => (
                           <li key={idx}>
                             <span className="wz-dot" />
                             <span className="tag-text">{cat.name}</span>
@@ -499,12 +541,14 @@ export default function PricingPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div className="wz-field">
                       <label className="wz-label" htmlFor="co-name">
-                        Name and University <span className="wz-req">*</span>
+                        {isStudentPricing ? 'Name and University' : 'Name or Company'} <span className="wz-req">*</span>
                       </label>
                       <input
                         id="co-name"
                         type="text"
-                        placeholder="e.g. Kamal Perera - University of Moratuwa"
+                        placeholder={isStudentPricing
+                          ? 'e.g. Kamal Perera - University of Moratuwa'
+                          : 'e.g. Kamal Perera - Acme Technologies'}
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className={`input-field ${errors.name ? 'invalid' : ''}`}
@@ -544,15 +588,48 @@ export default function PricingPage() {
 
                     <div className="wz-field">
                       <label className="wz-label" htmlFor="co-notes">
-                        Project topic / requirements <span style={{ opacity: 0.65, fontWeight: 400, marginLeft: 4 }}>(optional)</span>
+                        Project brief / requirements <span style={{ opacity: 0.65, fontWeight: 400, marginLeft: 4 }}>(optional)</span>
                       </label>
                       <textarea
                         id="co-notes"
-                        placeholder="Briefly describe your project, deadline, university guidelines..."
+                        placeholder={isStudentPricing
+                          ? 'Describe the topic, university requirements, deadline, existing work, and expected outcome...'
+                          : 'Describe the business need, required features, deadline, existing system, and expected outcome...'}
                         value={formData.notes}
                         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                         className="input-field area"
                       />
+                    </div>
+
+                    <div className="wz-field">
+                      <label className="wz-label" htmlFor="co-document">
+                        Supporting document <span style={{ opacity: 0.65, fontWeight: 400, marginLeft: 4 }}>(optional)</span>
+                      </label>
+                      <input
+                        id="co-document"
+                        type="file"
+                        accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                        className="input-field wz-file-input"
+                        onChange={(e) => setProjectDocument(e.target.files?.[0] ?? null)}
+                      />
+                      <span className="wz-field-hint">
+                        PDF, DOC, DOCX, or TXT. You will attach the selected file after WhatsApp opens.
+                      </span>
+                    </div>
+
+                    <div className="wz-field">
+                      <label className="wz-label" htmlFor="co-figma">
+                        Figma or design link <span style={{ opacity: 0.65, fontWeight: 400, marginLeft: 4 }}>(optional)</span>
+                      </label>
+                      <input
+                        id="co-figma"
+                        type="url"
+                        placeholder="https://www.figma.com/design/..."
+                        value={formData.figmaUrl}
+                        onChange={(e) => setFormData({ ...formData, figmaUrl: e.target.value })}
+                        className={`input-field ${errors.figmaUrl ? 'invalid' : ''}`}
+                      />
+                      {errors.figmaUrl && <span className="wz-error">{errors.figmaUrl}</span>}
                     </div>
                   </div>
                 </form>
