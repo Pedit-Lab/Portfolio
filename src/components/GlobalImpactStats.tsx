@@ -1,7 +1,7 @@
 import { AnimatedBackground } from './AnimatedBackground';
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { AnimatedCounter } from './AnimatedCounter';
-import { Globe, CheckCircle2, Users, Radio, Star } from 'lucide-react';
+import { Globe, CheckCircle2, Users, Radio, Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export const GlobalImpactStats: React.FC = () => {
@@ -11,25 +11,25 @@ export const GlobalImpactStats: React.FC = () => {
     {
       value: '125+',
       label: 'Completed Projects',
-      subtext: 'Software, Design, Cloud, IoT & AI Solutions',
+      subtext: 'Projects delivered',
       icon: <CheckCircle2 size={28} color={colors.primary} />,
     },
     {
       value: '48+',
       label: 'Active Clients',
-      subtext: 'Enterprise Corporations & Tech Startups',
+      subtext: 'Businesses and startups',
       icon: <Users size={28} color={colors.accentPurple} />,
     },
     {
       value: '15+',
       label: 'Countries Served',
-      subtext: 'Global Client Footprint',
+      subtext: 'Global reach',
       icon: <Globe size={28} color={colors.accentCyan} />,
     },
     {
-      value: '10,000+',
+      value: '10k+',
       label: 'IoT Devices Synced',
-      subtext: 'Connected to Applications & Cloud Platforms',
+      subtext: 'Connected devices',
       icon: <Radio size={28} color={colors.accentEmerald} />,
     },
   ];
@@ -48,26 +48,117 @@ export const GlobalImpactStats: React.FC = () => {
   const testimonials = [
     {
       quote:
-        'PEDIT Lab transformed our industrial automation hardware setup into a real-time AWS cloud dashboard. Their micro switch & sensor integration with Node.js backend was flawless.',
+        'PEDIT Lab turned our automation hardware into a reliable real-time cloud dashboard.',
       author: 'Marcus Vance',
       role: 'CTO, OmniScale Systems (USA)',
       rating: 5,
     },
     {
       quote:
-        'The speed and responsiveness of their web application built with Figma and Vercel exceeded our expectations. Truly a top-tier technology partner.',
+        'The application was fast, responsive, and better than we expected. Outstanding engineering.',
       author: 'Elena Rostova',
       role: 'Head of Product, CyberVantage Tech (Germany)',
       rating: 5,
     },
     {
       quote:
-        'Finding an engineering team that excels at both physical PCB hardware soldering and scalable cloud architecture is rare. PEDIT Lab is the complete package.',
+        'A rare team that understands both connected hardware and scalable cloud systems.',
       author: 'Kavinda Perera',
       role: 'Director of Innovation, SmartGrid IoT (Sri Lanka)',
       rating: 5,
     },
+    {
+      quote:
+        'Their cloud deployment and API architecture reduced our data latency by over 60%.',
+      author: 'David Miller',
+      role: 'VP of Engineering, CloudCore Labs (Australia)',
+      rating: 5,
+    },
+    {
+      quote:
+        'Intuitive UI and clean modular code. They delivered ahead of schedule with zero friction.',
+      author: 'Sarah Jenkins',
+      role: 'Chief Digital Officer, Nexus Retail (UK)',
+      rating: 5,
+    },
+    {
+      quote:
+        'Impressive IoT sensor integration and AI capabilities. Reliable long-term technology partner.',
+      author: 'Kenji Sato',
+      role: 'Head of IoT Solutions, Mirai Robotics (Japan)',
+      rating: 5,
+    },
   ];
+
+  // Carousel State: 3 visible cards, 4-second continuous rotation
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [cardOffset, setCardOffset] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  // Pad items with first 3 items for infinite seamless sliding loop
+  const displayItems = [...testimonials, ...testimonials.slice(0, 3)];
+
+  const updateCardOffset = useCallback(() => {
+    if (trackRef.current && trackRef.current.children.length > 1) {
+      const first = trackRef.current.children[0] as HTMLElement;
+      const second = trackRef.current.children[1] as HTMLElement;
+      if (first && second) {
+        const step = second.offsetLeft - first.offsetLeft;
+        if (step > 0) {
+          setCardOffset(step);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    updateCardOffset();
+    window.addEventListener('resize', updateCardOffset);
+    return () => window.removeEventListener('resize', updateCardOffset);
+  }, [updateCardOffset]);
+
+  // 4s auto-advance rotation
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setCurrentIndex(prev => prev + 1);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
+  // Handle wrap-around when reaching duplicate cards
+  const handleTransitionEnd = () => {
+    if (currentIndex >= testimonials.length) {
+      setIsTransitioning(false);
+      setCurrentIndex(0);
+    }
+  };
+
+  const handleNext = () => {
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentIndex === 0) {
+      setIsTransitioning(false);
+      setCurrentIndex(testimonials.length);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(true);
+          setCurrentIndex(testimonials.length - 1);
+        });
+      });
+    } else {
+      setIsTransitioning(true);
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
 
   return (
     <section
@@ -115,7 +206,7 @@ export const GlobalImpactStats: React.FC = () => {
           </h2>
 
           <p style={{ fontSize: '1.05rem', color: colors.textSecondary, lineHeight: 1.6 }}>
-            Supporting clients across 15+ countries with custom software, UI/UX and graphic design, cloud platforms, IoT solutions, and AI integrations.
+            Proven delivery across projects, clients, countries, and connected devices.
           </p>
         </div>
 
@@ -199,7 +290,7 @@ export const GlobalImpactStats: React.FC = () => {
                 International Client Locations
               </h3>
               <p style={{ fontSize: '0.88rem', color: colors.textSecondary, margin: '4px 0 0 0' }}>
-                Serving startups & enterprises worldwide from our engineering labs.
+                Supporting businesses around the world.
               </p>
             </div>
             <span
@@ -257,74 +348,221 @@ export const GlobalImpactStats: React.FC = () => {
           </div>
         </div>
 
-        {/* Client Testimonials Carousel / Cards */}
-        <div className="testimonials">
-          <h3
-            style={{
-              fontSize: '1.6rem',
-              fontWeight: 800,
-              color: colors.textPrimary,
-              textAlign: 'center',
-              marginBottom: '32px',
-            }}
-          >
-            What Our Clients Say
-          </h3>
-
+        {/* Client Testimonials Carousel / 6 Dummy Comments (3 visible, 4s auto-rotation) */}
+        <div
+          className="testimonials"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '32px',
+              flexWrap: 'wrap',
+              gap: '16px',
             }}
           >
-            {testimonials.map((t, idx) => (
-              <div
-                key={idx}
-                className="glass-card impact-card"
+            <div>
+              <h3
                 style={{
-                  padding: '28px',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
+                  fontSize: '1.6rem',
+                  fontWeight: 800,
+                  color: colors.textPrimary,
+                  margin: 0,
                 }}
               >
-                <div>
-                  <div style={{ display: 'flex', gap: '4px', marginBottom: '16px' }}>
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} size={16} fill="#F59E0B" color="#F59E0B" />
-                    ))}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: '0.92rem',
-                      color: colors.textSecondary,
-                      fontStyle: 'italic',
-                      lineHeight: 1.6,
-                      marginBottom: '20px',
-                    }}
-                  >
-                    "{t.quote}"
-                  </p>
-                </div>
+                What Our Clients Say
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: colors.textSecondary, margin: '4px 0 0 0' }}>
+                Trusted by technology founders and enterprise engineering teams worldwide.
+              </p>
+            </div>
 
+            {/* Navigation buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                onClick={handlePrev}
+                aria-label="Previous testimonial"
+                className="carousel-nav-btn"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: `1px solid ${colors.borderColor}`,
+                  color: colors.textPrimary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={handleNext}
+                aria-label="Next testimonial"
+                className="carousel-nav-btn"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: `1px solid ${colors.borderColor}`,
+                  color: colors.textPrimary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Carousel Viewport */}
+          <div
+            style={{
+              overflow: 'hidden',
+              width: '100%',
+              padding: '8px 2px',
+            }}
+          >
+            <div
+              ref={trackRef}
+              onTransitionEnd={handleTransitionEnd}
+              style={{
+                display: 'flex',
+                gap: '24px',
+                transform: `translateX(-${currentIndex * cardOffset}px)`,
+                transition: isTransitioning
+                  ? 'transform 0.65s cubic-bezier(0.25, 1, 0.5, 1)'
+                  : 'none',
+                willChange: 'transform',
+              }}
+            >
+              {displayItems.map((t, idx) => (
                 <div
+                  key={idx}
+                  className="glass-card impact-card testimonial-slide-card"
                   style={{
-                    paddingTop: '14px',
-                    borderTop: `1px solid ${colors.borderColor}`,
+                    flex: '0 0 calc((100% - 48px) / 3)',
+                    minWidth: '280px',
+                    boxSizing: 'border-box',
+                    padding: '28px',
+                    borderRadius: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '220px',
+                    position: 'relative',
                   }}
                 >
-                  <h5 style={{ fontSize: '0.92rem', fontWeight: 700, margin: 0, color: colors.textPrimary }}>
-                    {t.author}
-                  </h5>
-                  <p style={{ fontSize: '0.78rem', color: colors.primary, margin: 0, fontWeight: 600 }}>
-                    {t.role}
-                  </p>
+                  <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '16px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {[...Array(t.rating)].map((_, i) => (
+                          <Star key={i} size={15} fill="#F59E0B" color="#F59E0B" />
+                        ))}
+                      </div>
+                      <Quote size={20} color={colors.primary} style={{ opacity: 0.4 }} />
+                    </div>
+                    <p
+                      style={{
+                        fontSize: '0.92rem',
+                        color: colors.textSecondary,
+                        fontStyle: 'italic',
+                        lineHeight: 1.6,
+                        marginBottom: '20px',
+                      }}
+                    >
+                      "{t.quote}"
+                    </p>
+                  </div>
+
+                  <div
+                    style={{
+                      paddingTop: '14px',
+                      borderTop: `1px solid ${colors.borderColor}`,
+                    }}
+                  >
+                    <h5 style={{ fontSize: '0.92rem', fontWeight: 700, margin: 0, color: colors.textPrimary }}>
+                      {t.author}
+                    </h5>
+                    <p style={{ fontSize: '0.78rem', color: colors.primary, margin: 0, fontWeight: 600 }}>
+                      {t.role}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {/* Dots Indicator (6 dots) */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '8px',
+              marginTop: '28px',
+            }}
+          >
+            {testimonials.map((_, dotIdx) => {
+              const activeDot = currentIndex % testimonials.length;
+              const isActive = activeDot === dotIdx;
+              return (
+                <button
+                  key={dotIdx}
+                  onClick={() => {
+                    setIsTransitioning(true);
+                    setCurrentIndex(dotIdx);
+                  }}
+                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  style={{
+                    width: isActive ? '28px' : '8px',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: isActive ? colors.primary : 'rgba(255, 255, 255, 0.2)',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          <style>{`
+            .carousel-nav-btn:hover {
+              background: rgba(0, 240, 255, 0.15) !important;
+              border-color: rgba(0, 240, 255, 0.5) !important;
+              color: #00F0FF !important;
+            }
+            @media (max-width: 1023px) {
+              .testimonial-slide-card {
+                flex: 0 0 calc((100% - 24px) / 2) !important;
+              }
+            }
+            @media (max-width: 639px) {
+              .testimonial-slide-card {
+                flex: 0 0 100% !important;
+              }
+            }
+          `}</style>
         </div>
       </div>
     </section>

@@ -343,6 +343,13 @@
   padding-block-start: 112px !important;
 }
 
+/* Compact desktop/laptop widths at 100% zoom. */
+@media (max-width: 1200px) {
+  .wz-services { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wz-split-layout { grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
+  .wz-checkout-layout { grid-template-columns: minmax(320px, 380px) minmax(0, 1fr); gap: 20px; }
+}
+
 /* ─── TABLET (≤ 991px) ─────────────────────────────────────── */
 @media (max-width: 991px) {
   #main.pricing-page-main {

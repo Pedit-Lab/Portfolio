@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { useTheme } from '../context/ThemeContext';
 import { Navbar } from '../components/Navbar';
@@ -36,10 +37,13 @@ type Errors = { name?: string; email?: string; phone?: string };
 
 export default function PricingPage() {
   const { colors } = useTheme();
+  const [searchParams] = useSearchParams();
+  const urlService = searchParams.get('service');
+  const validUrlService = urlService && SERVICES.some((s) => s.id === urlService) ? urlService : null;
 
   // step: 1 = service, 2 = plan + addons, 3 = checkout, 4 = success
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [serviceId, setServiceId] = useState<string | null>(null);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(validUrlService ? 2 : 1);
+  const [serviceId, setServiceId] = useState<string | null>(validUrlService);
   const [planId, setPlanId] = useState<string>('standard');
   const [qtyMap, setQtyMap] = useState<Record<string, number>>({});
 

@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import './PentagonShowcase.css';
 
-interface PentagonItem { id: string; image: string }
+interface PentagonItem { id: string; image: string; thumbnail?: string }
 interface PentagonShowcaseProps<T extends PentagonItem> {
   items: T[];
   label: (item: T) => string;
@@ -14,6 +14,7 @@ interface PentagonShowcaseProps<T extends PentagonItem> {
 export function PentagonShowcase<T extends PentagonItem>({ items, label, title, children }: PentagonShowcaseProps<T>) {
   const [active, setActive] = useState(items[0].id);
   const prefix = useId();
+
   return <div className="pentagon-showcase">
     <div className="pentagon-stage" role="group" aria-label="Choose an item to explore">
       <svg className="pentagon-connections" viewBox="0 0 560 560" aria-hidden="true">
@@ -36,7 +37,7 @@ export function PentagonShowcase<T extends PentagonItem>({ items, label, title, 
         onFocus={() => setActive(item.id)}
         onClick={() => setActive(item.id)}
       >
-        <span className="pentagon-face"><img src={item.image} alt="" loading="lazy" /><span className="pentagon-label"><small>0{index + 1}</small>{label(item)}</span></span>
+        <span className="pentagon-face"><img src={item.thumbnail ?? item.image} alt="" loading="lazy" /><span className="pentagon-label"><small>0{index + 1}</small>{label(item)}</span></span>
       </button>)}
     </div>
     <div className="pentagon-details">

@@ -19,6 +19,12 @@ const heroMessages = [
 
 export const Hero: React.FC<HeroProps> = ({ onOpenQuote }) => {
   const { colors } = useTheme();
+  const highlights = [
+    { title: 'Custom Software', subtitle: 'Web & Business Apps', icon: <Cpu size={20} />, color: colors.primary },
+    { title: 'AWS & GCP', subtitle: 'Cloud Arch', icon: <Cloud size={20} />, color: colors.accentPurple },
+    { title: 'Connected IoT', subtitle: 'Devices & Embedded Systems', icon: <Zap size={20} />, color: colors.accentEmerald },
+    { title: 'Practical AI', subtitle: 'Insights & Automation', icon: <Brain size={20} />, color: colors.accentPurple },
+  ];
 
   return (
     <section
@@ -114,7 +120,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuote }) => {
                 maxWidth: '620px',
               }}
             >
-              We build custom software that simplifies work and helps businesses grow. Practical AI automates work, cloud engineering keeps applications connected, and IoT brings real-world data into your systems. Thoughtful UI/UX and graphic design make it all easy to use.
+              We build clear, reliable software that simplifies work and helps businesses grow.
             </p>
 
             {/* Action Buttons */}
@@ -132,48 +138,26 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuote }) => {
               </button>
             </div>
 
-            {/* Micro Highlights Banner */}
-            <div className="hero-highlights"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                gap: '16px',
-                paddingTop: '20px',
-                borderTop: `1px solid ${colors.borderColor}`,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(0, 240, 255, 0.1)' }}>
-                  <Cpu size={18} color={colors.primary} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 700, margin: 0, color: colors.textPrimary }}>Custom Software</h4>
-                  <p style={{ fontSize: '0.72rem', color: colors.textMuted, margin: 0 }}>Web & Business Apps</p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(112, 0, 255, 0.1)' }}>
-                  <Cloud size={18} color={colors.accentPurple} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 700, margin: 0, color: colors.textPrimary }}>AWS & GCP</h4>
-                  <p style={{ fontSize: '0.72rem', color: colors.textMuted, margin: 0 }}>Cloud Arch</p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ padding: '8px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)' }}>
-                  <Zap size={18} color={colors.accentEmerald} />
-                </div>
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 700, margin: 0, color: colors.textPrimary }}>Connected IoT</h4>
-                  <p style={{ fontSize: '0.72rem', color: colors.textMuted, margin: 0 }}>Devices & Embedded Systems</p>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Brain size={24} color={colors.accentPurple} />
-                <div><h4 style={{ fontSize: '0.85rem', margin: 0, color: colors.textPrimary }}>Practical AI</h4><p style={{ fontSize: '0.72rem', margin: 0, color: colors.textMuted }}>Insights & Automation</p></div>
+            {/* Four services orbit through the front position every three seconds. */}
+            <div className="hero-highlights" style={{ borderTop: `1px solid ${colors.borderColor}` }}>
+              <div className="hero-highlight-orbit">
+                {highlights.map((item, index) => (
+                  <div
+                    className="hero-highlight-card"
+                    key={item.title}
+                    style={{
+                      '--orbit-delay': `${index * -3}s`,
+                      '--highlight-color': item.color,
+                    } as React.CSSProperties}
+                  >
+                    <div className="hero-highlight-icon">{item.icon}</div>
+                    <div>
+                      <h4>{item.title}</h4>
+                      <p>{item.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
+                <span className="hero-orbit-ring" aria-hidden="true" />
               </div>
             </div>
           </div>

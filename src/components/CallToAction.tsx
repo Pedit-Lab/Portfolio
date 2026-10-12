@@ -11,7 +11,7 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
   const { colors } = useTheme();
 
   return (
-    <section className="cta-section premium-section"
+    <section id="cta" className="cta-section premium-section"
       style={{
         padding: '90px 0',
         position: 'relative',
@@ -91,7 +91,7 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
                 marginBottom: '36px',
               }}
             >
-              Bring your next web application, SaaS platform, or business tool to life with PEDIT Lab. We bring together software development, UI/UX and graphic design, cloud services, IoT connectivity, and AI automation around your goals.
+              Tell us what you want to build. We will help shape the right solution and next steps.
             </p>
 
             {/* Button */}

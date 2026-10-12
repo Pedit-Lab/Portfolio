@@ -1,10 +1,11 @@
 import { AnimatedBackground } from './AnimatedBackground';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layers, TrendingUp, Cpu, CheckCircle, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export const WhyChooseUs: React.FC = () => {
   const { colors } = useTheme();
+  const [activeReason, setActiveReason] = useState(0);
 
   const reasons = [
     {
@@ -12,7 +13,7 @@ export const WhyChooseUs: React.FC = () => {
       title: 'End-to-End Delivery',
       subtitle: 'From Product Idea to Software Launch',
       description:
-        'From requirements and UI/UX prototypes to software development, graphic assets, testing, and deployment, we keep your product focused on the people who use it.',
+        'One team takes your product from planning and design through development, testing, and launch.',
       badge: 'Complete Product Delivery',
       accentColor: colors.primary,
     },
@@ -21,7 +22,7 @@ export const WhyChooseUs: React.FC = () => {
       title: 'Scalable Architecture',
       subtitle: 'Built for Exponential Growth',
       description:
-        'Solutions designed to grow seamlessly with your user base. Powered by auto-scaling cloud microservices, distributed MongoDB Atlas databases, and high-throughput serverless endpoints.',
+        'Flexible architecture keeps your product fast and dependable as users and data grow.',
       badge: 'Zero Bottlenecks',
       accentColor: colors.accentPurple,
     },
@@ -30,11 +31,20 @@ export const WhyChooseUs: React.FC = () => {
       title: 'Intelligent Integrations',
       subtitle: 'Cloud, IoT & AI Working Together',
       description:
-        'Extend your software with cloud services, connected IoT devices, and AI-powered workflows. We design integrations around practical needs such as remote monitoring, knowledge search, and business automation.',
+        'Connect cloud, IoT, and AI around practical needs such as monitoring and automation.',
       badge: 'Connected Business Tools',
       accentColor: colors.accentEmerald,
     },
   ];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveReason(current => (current + 1) % reasons.length);
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [reasons.length]);
+
+  const reason = reasons[activeReason];
 
   return (
     <section
@@ -82,52 +92,19 @@ export const WhyChooseUs: React.FC = () => {
           </h2>
 
           <p style={{ fontSize: '1.05rem', color: colors.textSecondary, lineHeight: 1.6 }}>
-            We combine custom software development with thoughtful design and expertise in cloud, IoT, and AI. Your business goals guide every feature, integration, and product decision.
+            One practical team, clear decisions, and technology chosen around your goals.
           </p>
         </div>
 
-        {/* 3 Main Highlight Cards */}
-        <div className="advantage-grid"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '32px',
-          }}
-        >
-          {reasons.map((reason, idx) => (
-            <div
-              key={idx}
-              className="glass-card advantage-card"
-              style={{
-                padding: '36px',
-                borderRadius: '24px',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-              }}
-            >
+        <div className="why-showcase">
+          <div className="why-slider-column">
+            <div className="why-triangle" style={{ '--triangle-turn': `${activeReason * 120}deg` } as React.CSSProperties} aria-hidden="true">
+              <span /><span /><span />
+            </div>
+            <div key={activeReason} className="glass-card advantage-card why-reason-slide">
               <div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '24px',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: '18px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${colors.borderColor}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
+                <div className="why-reason-topline">
+                  <div className={`why-reason-icon why-reason-icon-${activeReason + 1}`}>
                     {reason.icon}
                   </div>
                   <span
@@ -145,16 +122,7 @@ export const WhyChooseUs: React.FC = () => {
                   </span>
                 </div>
 
-                <h3
-                  style={{
-                    fontSize: '1.4rem',
-                    fontWeight: 800,
-                    color: colors.textPrimary,
-                    marginBottom: '6px',
-                  }}
-                >
-                  {reason.title}
-                </h3>
+                <h3>{reason.title}</h3>
 
                 <p
                   style={{
@@ -195,7 +163,14 @@ export const WhyChooseUs: React.FC = () => {
                 </span>
               </div>
             </div>
-          ))}
+            <div className="why-slider-controls" aria-label="Why choose us slides">
+              {reasons.map((item, index) => <button key={item.title} type="button" className={index === activeReason ? 'is-active' : ''} onClick={() => setActiveReason(index)} aria-label={`Show ${item.title}`} aria-pressed={index === activeReason} />)}
+            </div>
+          </div>
+          <div className="why-photo-panel">
+            <img src="/visuals/why-choose-team.webp" alt="Software product team collaborating in a modern technology studio" width="1280" height="720" loading="lazy" />
+            <div><strong>One connected delivery team</strong><span>Software · Design · Cloud · IoT · AI</span></div>
+          </div>
         </div>
       </div>
     </section>

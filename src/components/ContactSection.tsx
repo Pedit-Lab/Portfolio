@@ -81,7 +81,7 @@ export const ContactSection: React.FC = () => {
           </h2>
 
           <p style={{ fontSize: '1.05rem', color: colors.textSecondary, lineHeight: 1.6 }}>
-            Planning a software product, a UI/UX or graphic design project, or a cloud, IoT, or AI solution? Tell us what you need and our team will respond within 24 hours.
+            Tell us about your project. Our team will respond within 24 hours.
           </p>
         </div>
 
