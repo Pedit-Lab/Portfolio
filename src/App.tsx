@@ -115,14 +115,17 @@ export default function App() {
     <ThemeProvider>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
 
-      {/* Site eke main content eka */}
-      <div style={{ opacity: showSplash ? 0 : 1, transition: 'opacity 0.8s ease-in-out' }}>
-        <Routes>
-          <Route path="/" element={<PortfolioEntry />} />
-          <Route path="/pricing" element={<PricingPage />} />
-        </Routes>
-        <FloatingChat />
-      </div>
+      {/* Video eka iwara una gaman Portfolio eka mount wenawa, 
+          ethakota Hero section eke robot hand animation eka first frame eke sita play wenawa! */}
+      {!showSplash && (
+        <div style={{ animation: 'hero-concept-load 0.8s ease-out' }}>
+          <Routes>
+            <Route path="/" element={<PortfolioEntry />} />
+            <Route path="/pricing" element={<PricingPage />} />
+          </Routes>
+          <FloatingChat />
+        </div>
+      )}
     </ThemeProvider>
   );
 }
