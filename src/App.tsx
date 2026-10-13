@@ -23,56 +23,10 @@ import type { ParticleTransitionHandle } from './components/ParticleTransition';
 import { FloatingChat } from './components/FloatingChat';
 import { Routes, Route } from 'react-router-dom';
 import PricingPage from './pages/PricingPage';
-import introVideo from '../202610121909.mp4';
-
-function VideoIntro({ onComplete }: { onComplete: () => void }) {
-  const [isLeaving, setIsLeaving] = useState(false);
-  const hasFinished = useRef(false);
-
-  const finishIntro = () => {
-    if (hasFinished.current) return;
-    hasFinished.current = true;
-    setIsLeaving(true);
-    window.setTimeout(onComplete, 650);
-  };
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, []);
-
-  return (
-    <div className={`site-video-intro${isLeaving ? ' site-video-intro--leaving' : ''}`}>
-      <div className="site-video-intro__stage">
-        <video
-          className="site-video-intro__video"
-          src={introVideo}
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          onEnded={finishIntro}
-          onError={finishIntro}
-          aria-label="PEDIT Lab introduction"
-        />
-      </div>
-      <button className="site-video-intro__skip" type="button" onClick={finishIntro}>
-        Skip intro
-      </button>
-    </div>
-  );
-}
+import { SplashScreen } from './components/SplashScreen';
 
 function PortfolioEntry() {
-  // Section deep links are return navigation, so do not replay the opening film.
-  const [introComplete, setIntroComplete] = useState(() => Boolean(window.location.hash));
-
-  return introComplete
-    ? <Portfolio />
-    : <VideoIntro onComplete={() => setIntroComplete(true)} />;
+  return <Portfolio />;
 }
 
 function Portfolio() {
@@ -154,13 +108,21 @@ function Portfolio() {
 }
 
 export default function App() {
+  // Hama refresh ekedima intro video eka play wenawa
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <ThemeProvider>
-      <Routes>
-        <Route path="/" element={<PortfolioEntry />} />
-        <Route path="/pricing" element={<PricingPage />} />
-      </Routes>
-      <FloatingChat />
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+
+      {/* Site eke main content eka */}
+      <div style={{ opacity: showSplash ? 0 : 1, transition: 'opacity 0.8s ease-in-out' }}>
+        <Routes>
+          <Route path="/" element={<PortfolioEntry />} />
+          <Route path="/pricing" element={<PricingPage />} />
+        </Routes>
+        <FloatingChat />
+      </div>
     </ThemeProvider>
   );
 }
