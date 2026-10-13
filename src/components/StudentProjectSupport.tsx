@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Brain, CheckCircle2, Cloud, Code2, Cpu, FileText, GraduationCap, Microscope, Tag } from 'lucide-react';
 import { AnimatedBackground } from './AnimatedBackground';
 import { useTheme } from '../context/ThemeContext';
@@ -65,9 +66,9 @@ export const StudentProjectSupport: React.FC = () => {
               <a href="#contact" className="btn-primary student-support-cta">
                 <span>Discuss Your Project</span><ArrowRight size={18} />
               </a>
-              <a href="/pricing?audience=student" className="btn-secondary student-support-cta">
+              <Link to="/pricing?audience=student" className="btn-secondary student-support-cta">
                 <Tag size={17} /><span>Student Pricing</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

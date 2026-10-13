@@ -108,8 +108,11 @@ function Portfolio() {
 }
 
 export default function App() {
-  // Hama refresh ekedima intro video eka play wenawa
-  const [showSplash, setShowSplash] = useState(true);
+  // Intro video only plays on root home page without hash deep-links
+  const [showSplash, setShowSplash] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.location.pathname === '/' && !window.location.hash;
+  });
 
   return (
     <ThemeProvider>

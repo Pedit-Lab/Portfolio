@@ -1,5 +1,6 @@
 import { AnimatedBackground } from './AnimatedBackground';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkles, Send, Mail, BriefcaseBusiness, GraduationCap } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -130,15 +131,15 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
                 <span>hello@peditlab.com</span>
               </a>
 
-              <a href="/pricing" className="btn-secondary cta-pricing-link">
+              <Link to="/pricing" className="btn-secondary cta-pricing-link">
                 <BriefcaseBusiness size={18} />
                 <span>Service Pricing</span>
-              </a>
+              </Link>
 
-              <a href="/pricing?audience=student" className="btn-secondary cta-pricing-link">
+              <Link to="/pricing?audience=student" className="btn-secondary cta-pricing-link">
                 <GraduationCap size={18} />
                 <span>Student Pricing</span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

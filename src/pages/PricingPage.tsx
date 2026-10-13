@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import { useTheme } from '../context/ThemeContext';
 import { Navbar } from '../components/Navbar';
@@ -335,12 +335,12 @@ export default function PricingPage() {
         <div className="container-custom">
           <div className="wz-header-row">
             <div className="wz-head">
-              <a
+              <Link
                 className="wz-return-link"
-                href={isStudentPricing ? '/#student-support' : '/#services'}
+                to={isStudentPricing ? '/#student-support' : '/#services'}
               >
                 ← Back to {isStudentPricing ? 'Student Support' : 'Services'}
-              </a>
+              </Link>
               <h2>{isStudentPricing ? 'University project support' : 'Service packages'}</h2>
               <p>{isStudentPricing
                 ? 'Choose the academic support you need and build a student-friendly guidance package.'
