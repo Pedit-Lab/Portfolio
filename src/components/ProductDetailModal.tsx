@@ -38,6 +38,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
           <img src={product.image} alt="" aria-hidden="true" />
           <div className="detail-modal-hero-shade" />
           <div className="detail-modal-heading">
+            <div className={`detail-modal-icon concept-title-icon concept-icon-${product.id}`}>{product.icon}</div>
             <div>
               <span>{product.category} · CONCEPT</span>
               <h3 id="product-detail-title">{product.name}</h3>

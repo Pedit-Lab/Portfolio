@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { AboutUs } from './components/AboutUs';
 import { Services } from './components/Services';
+import { StudentProjectSupport } from './components/StudentProjectSupport';
 import type { ServiceDetail } from './components/Services';
 import { WhyChooseUs } from './components/WhyChooseUs';
 import { ProductsInnovations } from './components/ProductsInnovations';
@@ -11,19 +12,88 @@ import type { InnovationProduct } from './components/ProductsInnovations';
 import { GlobalImpactStats } from './components/GlobalImpactStats';
 import { CallToAction } from './components/CallToAction';
 import { ContactSection } from './components/ContactSection';
+import { FrequentlyAskedQuestions } from './components/FrequentlyAskedQuestions';
 import { Footer } from './components/Footer';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { useVisualMotion } from './hooks/useVisualMotion';
+import { useSectionTransition } from './hooks/useSectionTransition';
+import { ParticleTransition } from './components/ParticleTransition';
+import type { ParticleTransitionHandle } from './components/ParticleTransition';
 import { FloatingChat } from './components/FloatingChat';
 import { Routes, Route } from 'react-router-dom';
 import PricingPage from './pages/PricingPage';
+import introVideo from '../202610121909.mp4';
+
+function VideoIntro({ onComplete }: { onComplete: () => void }) {
+  const [isLeaving, setIsLeaving] = useState(false);
+  const hasFinished = useRef(false);
+
+  const finishIntro = () => {
+    if (hasFinished.current) return;
+    hasFinished.current = true;
+    setIsLeaving(true);
+    window.setTimeout(onComplete, 650);
+  };
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <div className={`site-video-intro${isLeaving ? ' site-video-intro--leaving' : ''}`}>
+      <div className="site-video-intro__stage">
+        <video
+          className="site-video-intro__video"
+          src={introVideo}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          onEnded={finishIntro}
+          onError={finishIntro}
+          aria-label="PEDIT Lab introduction"
+        />
+      </div>
+      <button className="site-video-intro__skip" type="button" onClick={finishIntro}>
+        Skip intro
+      </button>
+    </div>
+  );
+}
+
+function PortfolioEntry() {
+  // Section deep links are return navigation, so do not replay the opening film.
+  const [introComplete, setIntroComplete] = useState(() => Boolean(window.location.hash));
+
+  return introComplete
+    ? <Portfolio />
+    : <VideoIntro onComplete={() => setIntroComplete(true)} />;
+}
 
 function Portfolio() {
   useVisualMotion();
   const [activeSection, setActiveSection] = useState('hero');
+  const particleRef = useRef<ParticleTransitionHandle | null>(null);
   const [service, setService] = useState<ServiceDetail | null>(null);
   const [product, setProduct] = useState<InnovationProduct | null>(null);
+
+  useSectionTransition({ particleRef, activeSection });
+
+  useEffect(() => {
+    const targetId = window.location.hash.slice(1);
+    if (!targetId || targetId === 'hero') return;
+
+    const scrollToTarget = () => {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    };
+    const frame = window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToTarget));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const goToContact = () => {
     setService(null);
@@ -63,14 +133,17 @@ function Portfolio() {
 
   return <div className="restored-portfolio">
     <a className="skip-link" href="#main">Skip to content</a>
+    <ParticleTransition ref={particleRef} />
     <Navbar activeSection={activeSection} onOpenQuote={goToContact} />
     <main id="main">
       <Hero onOpenQuote={goToContact} />
       <AboutUs />
       <Services onSelectService={setService} />
+      <StudentProjectSupport />
       <WhyChooseUs />
       <ProductsInnovations onOpenProductModal={setProduct} />
       <GlobalImpactStats />
+      <FrequentlyAskedQuestions />
       <CallToAction onOpenQuote={goToContact} />
       <ContactSection />
     </main>
@@ -84,7 +157,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <Routes>
-        <Route path="/" element={<Portfolio />} />
+        <Route path="/" element={<PortfolioEntry />} />
         <Route path="/pricing" element={<PricingPage />} />
       </Routes>
       <FloatingChat />

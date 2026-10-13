@@ -1,7 +1,7 @@
 import { AnimatedBackground } from './AnimatedBackground';
 import React from 'react';
 import { PentagonShowcase } from './PentagonShowcase';
-import { Cpu as Microchip, ArrowRight, Check } from 'lucide-react';
+import { Cpu as Microchip, ArrowRight, Check, MonitorCog, Brain, Cloud, Wifi, Palette } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 export interface InnovationProduct {
@@ -13,6 +13,8 @@ export interface InnovationProduct {
   features: string[];
   specs: { [key: string]: string };
   image: string;
+  thumbnail: string;
+  icon: React.ReactNode;
 }
 
 interface ProductsInnovationsProps {
@@ -28,7 +30,7 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
     "name": "BizFlow \u2014 Business Operations",
     "tagline": "One workspace for orders, inventory, and customer accounts",
     "category": "Software Development",
-    "description": "A sample business application for small teams to manage orders, track inventory, and maintain customer records in one workspace. The concept includes role-based access, searchable records, and reporting, with separate customer and staff journeys. It demonstrates how custom software can replace disconnected spreadsheets and support everyday operations.",
+    "description": "One workspace for small teams to manage orders, inventory, customers, and reports.",
     "features": [
       "Order and inventory management",
       "Customer portal and staff workspaces",
@@ -41,14 +43,16 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
       "Database": "PostgreSQL",
       "Delivery": "Responsive web application"
     },
-    "image": "/concepts/software.svg"
+    "image": "/concepts/software.svg",
+    "thumbnail": "/visuals/service-software-photo.webp",
+    "icon": <MonitorCog size={25} color={colors.primary} />
   },
   {
     "id": "ai",
     "name": "DocPilot \u2014 Document Assistant",
     "tagline": "Turn business documents into useful answers",
     "category": "AI",
-    "description": "A sample AI assistant for searching policies, manuals, and business documents. Users could ask questions, review answers with source references, and confirm extracted information before using it in a workflow.",
+    "description": "Search business documents, ask questions, and verify answers against their sources.",
     "features": [
       "Document search with source references",
       "Structured information extraction",
@@ -60,14 +64,16 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
       "Knowledge": "Document ingestion & vector search",
       "Review": "Source checks and human approval"
     },
-    "image": "/concepts/ai.svg"
+    "image": "/concepts/ai.svg",
+    "thumbnail": "/visuals/service-ai-photo.webp",
+    "icon": <Brain size={25} color={colors.accentPurple} />
   },
   {
     "id": "cloud",
     "name": "DeployDock \u2014 Cloud Delivery",
     "tagline": "A clear path from commit to deployment",
     "category": "Cloud",
-    "description": "A sample cloud engineering project for deploying a web application across staging and production. It brings together container hosting, automated build checks, service monitoring, and backup planning in a repeatable release workflow.",
+    "description": "A repeatable cloud workflow for testing, deploying, monitoring, and backing up web apps.",
     "features": [
       "Automated build and release pipeline",
       "Service health and log monitoring",
@@ -79,14 +85,16 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
       "Packaging": "Docker",
       "Operations": "Logs, alerts & database backups"
     },
-    "image": "/concepts/cloud.svg"
+    "image": "/concepts/cloud.svg",
+    "thumbnail": "/visuals/service-cloud-photo.webp",
+    "icon": <Cloud size={25} color={colors.primary} />
   },
   {
     "id": "iot",
     "name": "GrowSense \u2014 Smart Greenhouse",
     "tagline": "Make growing conditions visible",
     "category": "IoT",
-    "description": "A sample connected greenhouse system that collects soil moisture, temperature, and humidity readings. The concept pairs an embedded sensor device with a monitoring dashboard, configurable alerts, and manual irrigation controls.",
+    "description": "Live greenhouse readings, alerts, device status, and remote irrigation controls.",
     "features": [
       "Soil moisture and environmental readings",
       "Threshold alerts and device status",
@@ -98,7 +106,9 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
       "Messaging": "MQTT",
       "Controls": "Irrigation relay & manual override"
     },
-    "image": "/concepts/iot.svg"
+    "image": "/concepts/iot.svg",
+    "thumbnail": "/visuals/service-iot-photo.webp",
+    "icon": <Wifi size={25} color={colors.accentEmerald} />
   },
   {
     "id": "design",
@@ -113,7 +123,9 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
       "Tool": "Figma",
       "Deliverables": "User flow, clickable prototype & visual system"
     },
-    "image": "/concepts/design.svg"
+    "image": "/concepts/design.svg",
+    "thumbnail": "/visuals/service-design-photo.webp",
+    "icon": <Palette size={25} color={colors.accentPurple} />
   }
 ];
 
@@ -163,7 +175,7 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
           </h2>
 
           <p style={{ fontSize: '1.05rem', color: colors.textSecondary, lineHeight: 1.6 }}>
-            Sample projects showing how our software, AI, cloud, IoT, and design services could solve practical problems. These are illustrative concepts, not completed client work or available products.
+            Explore practical examples of what we can design and build. These are illustrative concepts.
           </p>
         </div>
 
@@ -213,9 +225,10 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
 
                 {/* Product Details */}
                 <div className="concept-details" style={{ padding: '28px' }}>
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: colors.textPrimary, margin: '0 0 4px 0' }}>
-                    {prod.name}
-                  </h3>
+                  <div className="concept-title-line">
+                    <span className={`concept-title-icon concept-icon-${prod.id}`}>{prod.icon}</span>
+                    <h3>{prod.name}</h3>
+                  </div>
                   <p style={{ fontSize: '0.85rem', fontWeight: 600, color: colors.primary, margin: '0 0 16px 0' }}>
                     {prod.tagline}
                   </p>
@@ -224,7 +237,7 @@ export const ProductsInnovations: React.FC<ProductsInnovationsProps> = ({ onOpen
                   </p>
 
                   {/* Highlights */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                  <div className="concept-feature-preview" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
                     {prod.features.slice(0, 3).map((feat, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Check size={16} color={colors.accentEmerald} />

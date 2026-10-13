@@ -52,7 +52,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p style={{ fontSize: '0.9rem', color: colors.textSecondary, lineHeight: 1.6, marginBottom: '20px' }}>
-              We build custom software and digital experiences for growing businesses, supported by UI/UX and graphic design, cloud engineering, IoT connectivity, and AI automation.
+              Clear, reliable digital products for growing businesses.
             </p>
 
             <div style={{ display: 'flex', gap: '12px' }}>

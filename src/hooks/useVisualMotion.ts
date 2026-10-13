@@ -45,20 +45,26 @@ export function useVisualMotion() {
           animations.add(animation);
           animation.onfinish = () => animations.delete(animation);
         });
-      }, { threshold: 0.08 });
+      }, {
+        // Use the middle of the viewport as the activation zone. In particular,
+        // this prevents About from animating while the user is still on Home.
+        rootMargin: '-12% 0px -35% 0px',
+        threshold: 0.08,
+      });
       document.querySelectorAll([
         '.section-intro>div',
         '.section-intro>.flow-heading',
         '.section-intro>p',
         '.about-copy>div:first-child',
         '.about-copy>.flow-heading',
-        '.about-copy>p',
+        '.about-copy>div:nth-of-type(2)>p',
         '.cta-section .flow-heading',
         '.cta-section .flow-heading~p',
         '.service-card',
         '.concept-project',
         '.advantage-card',
         '.metric-value',
+        '.faq-list',
         '.contact-grid',
       ].join(',')).forEach(element => observer?.observe(element));
     };

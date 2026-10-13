@@ -12,6 +12,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
   const { mode, toggleTheme, colors } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navHidden, setNavHidden] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,21 +22,57 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const precisePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!precisePointer.matches) {
+      setNavHidden(false);
+      return;
+    }
+
+    let idleTimer = window.setTimeout(() => setNavHidden(true), 2000);
+    const showNavigation = () => {
+      setNavHidden(false);
+      window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        const header = document.querySelector('.premium-header');
+        const focusedInside = header?.contains(document.activeElement) ?? false;
+        if (!header?.matches(':hover') && !focusedInside && !mobileMenuOpen) {
+          setNavHidden(true);
+        }
+      }, 2600);
+    };
+
+    window.addEventListener('pointermove', showNavigation, { passive: true });
+    window.addEventListener('keydown', showNavigation);
+    window.addEventListener('scroll', showNavigation, { passive: true });
+    return () => {
+      window.clearTimeout(idleTimer);
+      window.removeEventListener('pointermove', showNavigation);
+      window.removeEventListener('keydown', showNavigation);
+      window.removeEventListener('scroll', showNavigation);
+    };
+  }, [mobileMenuOpen]);
+
   const navLinks = [
     { name: 'Home', href: '/#hero' },
     { name: 'About Us', href: '/#about' },
     { name: 'Services', href: '/#services' },
+    { name: 'Students', href: '/#student-support' },
     { name: 'Why Us', href: '/#why-us' },
-    { name: 'Product Ideas', href: '/#products' },
-    { name: 'Impact & Stats', href: '/#impact' },
+    { name: 'Projects', href: '/#products' },
+    { name: 'Impact', href: '/#impact' },
+    { name: 'FAQ', href: '/#faq' },
+    { name: 'Start Project', href: '/#cta' },
     { name: 'Contact Us', href: '/#contact' },
   ];
 
   return (
     <header
-      className={`premium-header fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`premium-header fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navHidden ? 'nav-is-hidden' : ''} ${
         scrolled ? 'glass-nav py-3 shadow-lg' : 'bg-transparent py-5'
       }`}
+      onPointerEnter={() => setNavHidden(false)}
+      onFocusCapture={() => setNavHidden(false)}
     >
       <div className="container-custom flex items-center justify-between" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Brand Logo & Name */}
@@ -227,11 +264,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuote, activeSection }) =>
 
       {/* Responsive Inline CSS Styles */}
       <style>{`
-        @media (min-width: 1280px) {
+        @media (min-width: 1400px) {
           .desktop-nav { display: flex !important; }
           .mobile-toggle { display: none !important; }
         }
-        @media (max-width: 1279px) {
+        @media (max-width: 1399px) {
           .desktop-nav { display: none !important; }
           .mobile-toggle { display: flex !important; }
         }

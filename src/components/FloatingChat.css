@@ -476,7 +476,11 @@
 /* ─── Responsive ─── */
 @media (max-width: 640px) {
   .floating-chat-container { bottom: 16px; right: 16px; }
-  .floating-chat-window { width: calc(100vw - 32px); height: 420px; }
+  .floating-chat-window { width: calc(100vw - 32px); height: min(420px, calc(100dvh - 110px)); }
+}
+
+@media (max-height: 720px) and (min-width: 641px) {
+  .floating-chat-window { height: calc(100dvh - 120px); max-height: 500px; }
 }
 
 /* ─── Light Mode Overrides ─── */
