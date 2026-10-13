@@ -375,6 +375,8 @@ svg{flex-shrink:0}
 .cta-section .btn-primary{background:white;color:#16458c;font-size:.9rem!important;box-shadow:none}
 .cta-section .btn-secondary{color:white;border-color:#8ebaff66;font-size:.9rem!important}
 .cta-section .btn-secondary svg{color:white!important}
+.cta-section .cta-pricing-link{padding:15px 22px!important;text-decoration:none;background:#08295c30;border-color:#9ed8ff73}
+.cta-section .cta-pricing-link:hover{background:#06255775;border-color:#bceaff;box-shadow:0 10px 28px #061d4a45}
 @media(max-width:900px){.cta-section>.container-custom>.glass-card{grid-template-columns:minmax(0,1fr);padding:40px!important}.cta-section .cta-copy{grid-column:1;grid-row:2}.cta-visual{grid-column:1;grid-row:1;min-height:330px}}
 @media(max-width:600px){.cta-section>.container-custom>.glass-card{padding:24px 20px!important;gap:28px}.cta-visual{min-height:250px}.cta-visual img{width:122%}}
 /* Contact: editorial white section and an elevated form */

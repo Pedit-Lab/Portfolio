@@ -1,6 +1,6 @@
 import { AnimatedBackground } from './AnimatedBackground';
 import React from 'react';
-import { Sparkles, Send, Mail } from 'lucide-react';
+import { Sparkles, Send, Mail, BriefcaseBusiness, GraduationCap } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface CallToActionProps {
@@ -128,6 +128,16 @@ export const CallToAction: React.FC<CallToActionProps> = ({ onOpenQuote }) => {
               >
                 <Mail size={18} color={colors.primary} />
                 <span>hello@peditlab.com</span>
+              </a>
+
+              <a href="/pricing" className="btn-secondary cta-pricing-link">
+                <BriefcaseBusiness size={18} />
+                <span>Service Pricing</span>
+              </a>
+
+              <a href="/pricing?audience=student" className="btn-secondary cta-pricing-link">
+                <GraduationCap size={18} />
+                <span>Student Pricing</span>
               </a>
             </div>
           </div>
