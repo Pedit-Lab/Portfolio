@@ -121,11 +121,10 @@ export function useSectionTransition({
     previousSectionRef.current = toId;
   };
 
-  // Trigger when activeSection changes via scroll observation
+  // Scrolling only keeps the current section reference in sync. The cinematic
+  // transition is intentionally reserved for explicit navigation-link clicks.
   useEffect(() => {
-    if (previousSectionRef.current !== activeSection) {
-      executeTransition(previousSectionRef.current, activeSection);
-    }
+    previousSectionRef.current = activeSection;
   }, [activeSection]);
 
   // Intercept navigation link clicks across the page for immediate transition sync
