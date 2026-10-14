@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Send, Loader2, Bot, ArrowUpRight } from 'lucide-react';
 import { sendChatMessage, type ChatMessage, type ChatAction } from '../services/chatService';
 import botSleep from '../assets/bot-sleep.png';
@@ -7,13 +8,19 @@ import bot1 from '../assets/bot1.png';
 import bot2 from '../assets/bot2.png';
 import './FloatingChat.css';
 
+// Sanitize HTML and parse markdown formatting
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 const formatMessage = (text: string) => {
   if (!text) return { __html: '' };
-  const html = text
+  const html = escapeHtml(text)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/^- (.*)$/gm, '• $1')
-    .replace(/\n/g, '<br />');
+    .replace(/^\s*[\*\-]\s+(.*)$/gm, '<div class="chat-bullet-line">• $1</div>')
+    .replace(/\n/g, '<br />')
+    .replace(/<div class="chat-bullet-line">/g, '<div class="chat-bullet-line" style="margin: 3px 0; padding-left: 4px;">')
+    .replace(/<br \/><div/g, '<div');
   return { __html: html };
 };
 
@@ -22,6 +29,7 @@ export const FloatingChat = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [blinkOpen, setBlinkOpen] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'model',
@@ -34,18 +42,23 @@ export const FloatingChat = () => {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [blinkOpen, setBlinkOpen] = useState(true);
+  const navigate = useNavigate();
 
+  // Avatar blink animation
   useEffect(() => {
-    const interval = setInterval(() => {
+    let timeoutId: number;
+    const interval = window.setInterval(() => {
       setBlinkOpen(false);
-      setTimeout(() => setBlinkOpen(true), 200);
+      timeoutId = window.setTimeout(() => setBlinkOpen(true), 200);
     }, 2000);
-    return () => clearInterval(interval);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
+  // Preload avatars
   useEffect(() => {
-    // Preload avatars to ensure instant blinking in production/CDN
     [bot1, bot2, botSleep, botAwake].forEach((src) => {
       const img = new Image();
       img.src = src;
@@ -55,34 +68,33 @@ export const FloatingChat = () => {
   const headerAvatar = blinkOpen ? bot2 : bot1;
   const fabAvatar = isHovered ? botAwake : (blinkOpen ? botSleep : bot1);
 
+  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  // Action button click handler
   const handleActionClick = (act: ChatAction) => {
     if (act.type === 'navigate') {
-      if (window.location.pathname === act.target) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        window.location.href = act.target;
-      }
+      navigate(act.target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (act.type === 'scroll') {
       if (window.location.pathname !== '/') {
-        window.location.href = `/#${act.target}`;
+        navigate(`/#${act.target}`);
       } else {
         const el = document.getElementById(act.target);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-          window.location.href = `/#${act.target}`;
+          navigate(`/#${act.target}`);
         }
       }
     } else if (act.type === 'quote') {
       if (window.location.pathname !== '/') {
-        window.location.href = '/#contact';
+        navigate('/#contact');
       } else {
         const el = document.getElementById('contact');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
   };
@@ -111,10 +123,8 @@ export const FloatingChat = () => {
 
   return (
     <div className="floating-chat-container">
-
       {isOpen && (
         <div className="floating-chat-window">
-
           {/* Header */}
           <div className="floating-chat-header">
             <div className="header-left">
@@ -154,7 +164,6 @@ export const FloatingChat = () => {
                     dangerouslySetInnerHTML={formatMessage(msg.text)} 
                   />
 
-                  {/* Web Assistant Action Buttons */}
                   {msg.actions && msg.actions.length > 0 && (
                     <div className="message-actions">
                       {msg.actions.map((act, aIdx) => (
@@ -188,7 +197,7 @@ export const FloatingChat = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
+          {/* Input Form */}
           <div className="floating-chat-input-area">
             <form onSubmit={handleSend} className="chat-form">
               <input
@@ -209,11 +218,10 @@ export const FloatingChat = () => {
               </button>
             </form>
           </div>
-
         </div>
       )}
 
-      {/* Robot FAB */}
+      {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         onMouseEnter={() => setIsHovered(true)}
@@ -239,7 +247,6 @@ export const FloatingChat = () => {
           </div>
         )}
       </button>
-
     </div>
   );
 };
